@@ -3,8 +3,9 @@ using System.Collections.Generic;
 
 namespace Quoridor.Core.Abstraction
 {
-    public interface IStepValidator
+    public interface IStepsProvider
     {
         List<Point> GetPossibleSteps(IReadableBoard board, Point startPoint);
+        List<Point> GetPossibleJumps(IReadableBoard board, Point startPoint);
     }
 }

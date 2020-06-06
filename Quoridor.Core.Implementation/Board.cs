@@ -9,8 +9,8 @@ namespace Quoridor.Core.Implementation
         private readonly IPawn?[,] _tiles;
         private readonly Fence?[,] _fenceCrossroads;
 
-        public IReadablePawn[,] Tiles => (IPawn[,])_tiles.Clone();
-        public Fence[,] FenceCrossroads => (Fence[,])_fenceCrossroads.Clone();
+        public IReadablePawn[,] Tiles => _tiles;
+        public Fence[,] FenceCrossroads => _fenceCrossroads;
 
         public Board(int sideSize)
         {
@@ -89,6 +89,11 @@ namespace Quoridor.Core.Implementation
         private bool FenceCrossroadIsClear(Point point)
         {
             return _fenceCrossroads[point.X, point.Y] == null;
+        }
+
+        public object Clone()
+        {
+            return this.MemberwiseClone();
         }
     }
 }

@@ -8,7 +8,7 @@ namespace Quoridor.Core.Implementation
     public class RandomBotPawn : Pawn, IBotPawn
     {
         Random random = new Random();
-        public RandomBotPawn(string name, int numberOfFences) : base(name, numberOfFences)
+        public RandomBotPawn(string name, int numberOfFences, PawnColor color) : base(name, numberOfFences, color)
         {
 
         }
@@ -18,7 +18,7 @@ namespace Quoridor.Core.Implementation
             IReadablePawn currentPlayer = gameEngine.CurrentPlayer;
             IReadableBoard board = gameEngine.Board;
 
-            switch (random.Next(0, 2))
+            switch (0)
             {
                 case 0:
                     MakeRandomMove(gameEngine, random);
@@ -34,26 +34,31 @@ namespace Quoridor.Core.Implementation
 
         private void MakeRandomMove(IGameEngine gameEngine, Random random)
         {
-            IStepValidator stepValidator = new StepValidator();
-            List<Point> steps = stepValidator.GetPossibleSteps(gameEngine.Board, gameEngine.CurrentPlayer.Position);
+            IStepsProvider stepsProvider = new StepsProvider();
+            List<Point> steps = stepsProvider.GetPossibleSteps(gameEngine.Board, Position);
 
-            int stepId = random.Next(0, steps.Count);
-            while (steps.Count > 0 && !gameEngine.TryMovePawn(steps[stepId]))
+            while (steps.Count > 0)
             {
+                int stepId = random.Next(0, steps.Count);
+                if (gameEngine.TryMovePawn(steps[stepId]))
+                    return;
                 steps.RemoveAt(stepId);
-                stepId = random.Next(0, steps.Count);
             }
         }
 
         private bool PutRandomFence(IGameEngine gameEngine, Random random)
         {
             bool result = false;
+
+            if (NumberOfFences == 0)
+                return false;
+
             List<Point> freeFenceCrossroads = ParseFreeFenceCrossroads(gameEngine.Board.FenceCrossroads);
             int fenceCrossroadId = random.Next(0, freeFenceCrossroads.Count);
 
             FenceDirection fenceDirection = (FenceDirection)random.Next(0, 2);
-            result = gameEngine.TryPlaceFence(freeFenceCrossroads[fenceCrossroadId], fenceDirection);
-            while (freeFenceCrossroads.Count > 0 && !result)
+            result = freeFenceCrossroads.Count > 0 ? gameEngine.TryPlaceFence(freeFenceCrossroads[fenceCrossroadId], fenceDirection) : false;
+            while (freeFenceCrossroads.Count > 0 && NumberOfFences > 0 && !result)
             {
                 freeFenceCrossroads.RemoveAt(fenceCrossroadId);
                 fenceCrossroadId = random.Next(0, freeFenceCrossroads.Count);
