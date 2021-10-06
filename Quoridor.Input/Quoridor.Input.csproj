@@ -5,4 +5,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Quoridor.Core.Abstraction\Quoridor.Core.Abstraction.csproj" />
+  </ItemGroup>
+
 </Project>

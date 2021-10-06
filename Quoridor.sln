@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31612.314
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Quoridor.Core.Models", "Quoridor.Core.Models\Quoridor.Core.Models.csproj", "{736C34C6-16E4-4C93-A00E-2E32A7048881}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Quoridor.Core.Abstraction", "Quoridor.Core.Abstraction\Quoridor.Core.Abstraction.csproj", "{D1F861ED-651A-4D7B-AC33-29960E72ECB2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Quoridor.Core.Abstraction", "Quoridor.Core.Abstraction\Quoridor.Core.Abstraction.csproj", "{D1F861ED-651A-4D7B-AC33-29960E72ECB2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Quoridor.Core.Implementation", "Quoridor.Core.Implementation\Quoridor.Core.Implementation.csproj", "{8D70505E-AABD-4644-9A37-D614491F63CE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Quoridor.Core.Implementation", "Quoridor.Core.Implementation\Quoridor.Core.Implementation.csproj", "{8D70505E-AABD-4644-9A37-D614491F63CE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Quoridor.Input", "Quoridor.Input\Quoridor.Input.csproj", "{72645DD6-B209-4512-A658-892742CE9F77}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,10 +15,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{736C34C6-16E4-4C93-A00E-2E32A7048881}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{736C34C6-16E4-4C93-A00E-2E32A7048881}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{736C34C6-16E4-4C93-A00E-2E32A7048881}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{736C34C6-16E4-4C93-A00E-2E32A7048881}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D1F861ED-651A-4D7B-AC33-29960E72ECB2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D1F861ED-651A-4D7B-AC33-29960E72ECB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D1F861ED-651A-4D7B-AC33-29960E72ECB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -27,6 +23,10 @@ Global
 		{8D70505E-AABD-4644-9A37-D614491F63CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8D70505E-AABD-4644-9A37-D614491F63CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8D70505E-AABD-4644-9A37-D614491F63CE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{72645DD6-B209-4512-A658-892742CE9F77}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{72645DD6-B209-4512-A658-892742CE9F77}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{72645DD6-B209-4512-A658-892742CE9F77}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{72645DD6-B209-4512-A658-892742CE9F77}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
