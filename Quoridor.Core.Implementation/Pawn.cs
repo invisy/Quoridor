@@ -9,7 +9,9 @@ public class Pawn : IPawn
 
     public string Name { get; }
     public int NumberOfFences { get; private set; }
-    public Point Position { get; set; }
+    public Point Position { get; set; } = new Point(-1, -1);
+
+    public bool IsOutOfBoard => Position.X == -1 && Position.Y == -1;
 
     public Pawn(string name, int numberOfFences, IPlayerController playerController)
     {
@@ -21,12 +23,13 @@ public class Pawn : IPawn
             throw new ArgumentOutOfRangeException("Number of fences must be positive!");
     }
 
-    public void TakeFence()
+    public bool TryTakeFence()
     {
-        if (NumberOfFences > 0)
-            NumberOfFences--;
-        else
-            throw new Exception("Number of fences must be positive!"); //FIXME
+        if (NumberOfFences == 0)
+            return false;
+
+        NumberOfFences--;
+        return true;
     }
 
     public void EnableInput()

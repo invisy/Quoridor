@@ -4,8 +4,9 @@ namespace Quoridor.Core.Abstraction;
 
 public interface IPawn : IReadablePawn
 {
+    public bool IsOutOfBoard { get; }
     Point Position {get; set;}
-    void TakeFence();
+    bool TryTakeFence();
     void EnableInput();
     void DisableInput();
 }

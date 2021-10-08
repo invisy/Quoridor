@@ -25,9 +25,17 @@ public class Board : IBoard
             throw new ArgumentOutOfRangeException("Only odd positive value (except 1) is allowed!");
     }
 
-    public bool TryMovePawn(Point coordinate)
+    public bool TrySetPawn(IPawn pawn, Point coordinate)
     {
-        //TODO
+        if (!PointIsNotOutOfBoard(coordinate) || TileIsOccupied(coordinate))
+            return false;
+
+        if (_tiles[pawn.Position.X, pawn.Position.Y] != pawn || !pawn.IsOutOfBoard)
+                throw new Exception("Player coordinates doesn`t match board information about them!");
+
+        pawn.Position = coordinate;
+        _tiles[pawn.Position.X, pawn.Position.Y] = null;
+        _tiles[coordinate.X, coordinate.Y] = pawn;
         return true;
     }
 
@@ -37,9 +45,12 @@ public class Board : IBoard
         Fence[,] horizontalPassages = _passages[FenceDirection.HORIZONTAL];
         Fence[,] verticalPassages = _passages[FenceDirection.VERTICAL];
 
+        if (coordinate.X < 0 || coordinate.Y < 0)
+            return false;
+
         if (fenceDirection == FenceDirection.HORIZONTAL)
         {
-            if (coordinate.X < horizontalPassages.GetLength(0) && coordinate.Y <= horizontalPassages.GetLength(1))
+            if (coordinate.X < horizontalPassages.GetLength(0)-1 && coordinate.Y < horizontalPassages.GetLength(1))
             {
                 if (horizontalPassages[coordinate.X, coordinate.Y] == null && horizontalPassages[coordinate.X + 1, coordinate.Y] == null &&
                     (verticalPassages[coordinate.X, coordinate.Y] == null && verticalPassages[coordinate.X, coordinate.Y + 1] == null ||
@@ -57,7 +68,7 @@ public class Board : IBoard
         }
         else
         {
-            if (coordinate.X <= verticalPassages.GetLength(0) && coordinate.Y < verticalPassages.GetLength(1))
+            if (coordinate.X < verticalPassages.GetLength(0) && coordinate.Y < verticalPassages.GetLength(1)-1)
             {
                 if ((horizontalPassages[coordinate.X, coordinate.Y] == null && horizontalPassages[coordinate.X + 1, coordinate.Y] == null ||
                     horizontalPassages[coordinate.X, coordinate.Y] != horizontalPassages[coordinate.X + 1, coordinate.Y]) &&
@@ -75,5 +86,15 @@ public class Board : IBoard
         }
 
         return false;
+    }
+
+    private bool TileIsOccupied(Point point)
+    {
+        return _tiles[point.X, point.Y] != null;
+    }
+
+    private bool PointIsNotOutOfBoard(Point point)
+    {
+        return point.X >= 0 || point.Y >= 0 || point.X < _tiles.GetLength(0) || point.Y < _tiles.GetLength(0);
     }
 }

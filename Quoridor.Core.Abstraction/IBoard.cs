@@ -4,6 +4,6 @@ namespace Quoridor.Core.Abstraction;
 
 public interface IBoard : IReadableBoard
 {
-    bool TryMovePawn(Point coordinate);
+    bool TrySetPawn(IPawn pawn, Point coordinate);
     bool TryPutFence(Point coordinate, FenceDirection fenceDirection);
 }
