@@ -57,7 +57,7 @@ public class Board : IBoard
                     verticalPassages[coordinate.X, coordinate.Y] != verticalPassages[coordinate.X, coordinate.Y + 1]))
                 {
                     Point secondCoordinate = new Point(coordinate.X + 1, coordinate.Y);
-                    Fence fence = new Fence(coordinate, secondCoordinate);
+                    Fence fence = new Fence(coordinate, secondCoordinate, fenceDirection);
                     _fences.Add(fence);
                     horizontalPassages[coordinate.X, coordinate.Y] = fence;
                     horizontalPassages[coordinate.X+1, coordinate.Y] = fence;
@@ -75,7 +75,7 @@ public class Board : IBoard
                     verticalPassages[coordinate.X, coordinate.Y] == null && verticalPassages[coordinate.X, coordinate.Y+1] == null)
                 {
                     Point secondCoordinate = new Point(coordinate.X, coordinate.Y+1);
-                    Fence fence = new Fence(coordinate, secondCoordinate);
+                    Fence fence = new Fence(coordinate, secondCoordinate, fenceDirection);
                     _fences.Add(fence);
                     horizontalPassages[coordinate.X, coordinate.Y] = fence;
                     horizontalPassages[coordinate.X, coordinate.Y+1] = fence;
