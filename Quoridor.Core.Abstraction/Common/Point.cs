@@ -1,6 +1,6 @@
 ﻿namespace Quoridor.Core.Abstraction.Common;
 
-public class Point
+public class Point : IEquatable<Point>
 {
     public int X { get; }
     public int Y { get; }
@@ -9,5 +9,10 @@ public class Point
     {
         X = x;
         Y = y;
+    }
+
+    public bool Equals(Point? other)
+    {
+        return X == other?.X && Y == other?.Y;
     }
 }
