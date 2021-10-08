@@ -8,9 +8,12 @@ public interface IGameEngine
     IReadablePawn CurrentPlayer { get; }
     IReadOnlyList<IReadablePawn> AllPlayers { get; }
     IReadablePawn Winner { get; }
-    event EventHandler GameStarted;
-    event EventHandler BoardUpdated;
-    event EventHandler GameEnded;
+    event Action GameStarted;
+    event Action BoardUpdated;
+    event Action GameEnded;
+
+    public void AddPlayer(IPawn pawn);
+    public void Start();
     bool TryMovePawn(Point position);
     bool TryPlaceFence(Point position, FenceDirection direction);
 }
