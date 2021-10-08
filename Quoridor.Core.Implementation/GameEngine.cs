@@ -11,6 +11,9 @@ public class GameEngine : IGameEngine
 
     private LinkedListNode<IPawn> _currentPlayer;
 
+    private IPathFinder _pathFinder;
+    private IStepValidator _stepValidator;
+
     public event Action GameStarted;
     public event Action BoardUpdated;
     public event Action GameEnded;
@@ -20,9 +23,11 @@ public class GameEngine : IGameEngine
     public IReadOnlyList<IReadablePawn> AllPlayers => _playerPawns.ToList<IReadablePawn>().AsReadOnly();
     public IReadablePawn Winner { get; }
 
-    public GameEngine(IBoard board)
+    public GameEngine(IBoard board, IPathFinder pathFinder, IStepValidator stepValidator)
     {
         _board = board;
+        _pathFinder = pathFinder;
+        _stepValidator = stepValidator;
     }
 
     public void AddPlayer(IPawn pawn)
@@ -78,16 +83,52 @@ public class GameEngine : IGameEngine
 
     public bool TryMovePawn(Point position)
     {
-        throw new NotImplementedException(); //TODO
-        SwitchPlayer();
-        BoardUpdated?.Invoke();
+        Point oldPosition = _currentPlayer.Value.Position;
+        if (_stepValidator.GetPossibleSteps(_board, _currentPlayer.Value.Position).Where(x => x.Equals(position)).FirstOrDefault() != null)
+        {
+            if (_board.TrySetPawn(_currentPlayer.Value, position))
+            {
+                foreach (IPawn pawn in _playerPawns)
+                {
+                    if (!_pathFinder.PathExistsToAny(_board, pawn.Position, _winPoints[pawn]))
+                    {
+                        _board.TrySetPawn(_currentPlayer.Value, oldPosition);
+                        return false;
+                    }
+                }
+
+                if (_winPoints[_currentPlayer.Value].Where(x => x.Equals(position)).FirstOrDefault() != null)
+                    GameEnded?.Invoke();
+
+                SwitchPlayer();
+                BoardUpdated?.Invoke();
+
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public bool TryPlaceFence(Point position, FenceDirection direction)
     {
-        throw new NotImplementedException(); //TODO
-        SwitchPlayer();
-        BoardUpdated?.Invoke();
+        if(_board.TryPutFence(position, direction))
+        {
+            foreach (IPawn pawn in _playerPawns)
+            {
+                if (!_pathFinder.PathExistsToAny(_board, pawn.Position, _winPoints[pawn]))
+                {
+                    _board.RemoveFenceIfExists(position, direction);
+                    return false;
+                }   
+            }
+            SwitchPlayer();
+            BoardUpdated?.Invoke();
+
+            return true;
+        }
+        
+        return false;
     }
 
     private List<Point> GenerateWinPoints(Point start, Point end)
