@@ -90,7 +90,7 @@ public class GameEngine : IGameEngine
             {
                 foreach (IPawn pawn in _playerPawns)
                 {
-                    if (!_pathFinder.PathExistsToAny(_board, pawn.Position, _winPoints[pawn]))
+                    if (!_pathFinder.PathExistsToAny(pawn.Position, _winPoints[pawn]))
                     {
                         _board.TrySetPawn(_currentPlayer.Value, oldPosition);
                         return false;
@@ -116,7 +116,7 @@ public class GameEngine : IGameEngine
         {
             foreach (IPawn pawn in _playerPawns)
             {
-                if (!_pathFinder.PathExistsToAny(_board, pawn.Position, _winPoints[pawn]))
+                if (!_pathFinder.PathExistsToAny(pawn.Position, _winPoints[pawn]))
                 {
                     _board.RemoveFenceIfExists(position, direction);
                     return false;
