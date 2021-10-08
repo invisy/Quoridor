@@ -2,9 +2,11 @@
 
 public class Fence
 {
-    public IReadOnlyList<Point> FencePositions { get; }
-    public Fence(List<Point> points)
+    private List<Point> fencePoints = new();
+    public IReadOnlyList<Point> FencePoints => fencePoints;
+    public Fence(Point firstPoint, Point secondPoint)
     {
-        FencePositions = points.AsReadOnly();
+        fencePoints.Add(firstPoint);
+        fencePoints.Add(secondPoint);
     }
 }
