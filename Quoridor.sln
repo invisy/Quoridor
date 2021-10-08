@@ -7,7 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Quoridor.Core.Abstraction",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Quoridor.Core.Implementation", "Quoridor.Core.Implementation\Quoridor.Core.Implementation.csproj", "{8D70505E-AABD-4644-9A37-D614491F63CE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Quoridor.Input", "Quoridor.Input\Quoridor.Input.csproj", "{72645DD6-B209-4512-A658-892742CE9F77}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Quoridor.Input", "Quoridor.Input\Quoridor.Input.csproj", "{72645DD6-B209-4512-A658-892742CE9F77}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Quoridor.MVC", "Quoridor.MVC\Quoridor.MVC.csproj", "{D3C03089-50FB-4A6C-AE55-80098E72CCBC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{72645DD6-B209-4512-A658-892742CE9F77}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{72645DD6-B209-4512-A658-892742CE9F77}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{72645DD6-B209-4512-A658-892742CE9F77}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D3C03089-50FB-4A6C-AE55-80098E72CCBC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D3C03089-50FB-4A6C-AE55-80098E72CCBC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D3C03089-50FB-4A6C-AE55-80098E72CCBC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D3C03089-50FB-4A6C-AE55-80098E72CCBC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
