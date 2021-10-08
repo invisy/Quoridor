@@ -87,6 +87,25 @@ public class Board : IBoard
 
         return false;
     }
+    public void RemoveFenceIfExists(Point position, FenceDirection direction)
+    {
+        if(PointIsNotOutOfBoard(position))
+        {
+            Fence fence = _passages[direction][position.X, position.Y];
+            if (direction == FenceDirection.HORIZONTAL && fence == _passages[direction][position.X + 1, position.Y])
+            {
+                _passages[direction][position.X, position.Y] = null;
+                _passages[direction][position.X + 1, position.Y] = null;
+                _fences.Remove(fence);
+            }
+            else if (direction == FenceDirection.VERTICAL && fence == _passages[direction][position.X, position.Y+1])
+            {
+                _passages[direction][position.X, position.Y] = null;
+                _passages[direction][position.X, position.Y+1] = null;
+                _fences.Remove(fence);
+            }
+        }
+    }
 
     private bool TileIsOccupied(Point point)
     {
