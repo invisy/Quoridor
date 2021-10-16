@@ -119,6 +119,9 @@ namespace Quoridor.Core.Implementation
 
         public bool TryPlaceFence(Point position, FenceDirection direction)
         {
+            if (_currentPlayer.Value.NumberOfFences == 0)
+                return false;
+
             if (_board.TryPutFence(position, direction))
             {
                 foreach (IPawn pawn in _playerPawns)
@@ -129,6 +132,8 @@ namespace Quoridor.Core.Implementation
                         return false;
                     }
                 }
+
+                _currentPlayer.Value.TryTakeFence();
                 SwitchPlayer();
                 BoardUpdated?.Invoke();
 
