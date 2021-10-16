@@ -12,6 +12,7 @@ namespace Quoridor.Core.Implementation
         private readonly LinkedList<IPawn> _playerPawns = new();
         private readonly Dictionary<IPawn, List<Point>> _winPoints = new();
 
+        private IPawn? _winner;
         private LinkedListNode<IPawn> _currentPlayer;
 
         private IPathFinder _pathFinder;
@@ -24,7 +25,7 @@ namespace Quoridor.Core.Implementation
         public IReadableBoard Board => _board;
         public IReadablePawn CurrentPlayer => _currentPlayer.Value;
         public IReadOnlyList<IReadablePawn> AllPlayers => _playerPawns.ToList<IReadablePawn>().AsReadOnly();
-        public IReadablePawn? Winner { get; }
+        public IReadablePawn? Winner => _winner;
 
         public GameEngine(IBoard board, IPathFinder pathFinder, IStepValidator stepValidator)
         {
@@ -101,8 +102,11 @@ namespace Quoridor.Core.Implementation
                     }
 
                     if (_winPoints[_currentPlayer.Value].Where(x => x.Equals(position)).FirstOrDefault() != null)
+                    {
+                        _winner = _currentPlayer.Value;
                         GameEnded?.Invoke();
-
+                    }
+                        
                     SwitchPlayer();
                     BoardUpdated?.Invoke();
 
