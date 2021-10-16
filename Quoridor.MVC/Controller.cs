@@ -19,7 +19,7 @@ namespace Quoridor.MVC
 
         public void Start()
         {
-            Board board = new Board(9*2 - 1);
+            Board board = new Board(9);
             _view.DrawBoard(board);
         }
     }
