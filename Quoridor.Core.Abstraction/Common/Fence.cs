@@ -1,5 +1,3 @@
-﻿using System;
-
 namespace Quoridor.Core.Abstraction.Common
 {
     public class Fence
