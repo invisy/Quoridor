@@ -1,5 +1,7 @@
-﻿using Quoridor.Core.Implementation;
+using Quoridor.Core.Abstraction;
 using Quoridor.Core.Abstraction.Common;
+using Quoridor.Core.Implementation;
+
 using Quoridor.MVC.Utilites;
 using System;
 using System.Collections.Generic;
@@ -30,7 +32,7 @@ namespace Quoridor.MVC
             Console.Clear();
         }
 
-        public void DrawBoard(Board board)
+        public void DrawBoard(IBoard board)
         {
             int size = board.Tiles.GetLength(0);
             char[,] blankBoard = prepareBoard(size.Adapt());

@@ -24,7 +24,7 @@ namespace Quoridor.Core.Implementation
         public IReadableBoard Board => _board;
         public IReadablePawn CurrentPlayer => _currentPlayer.Value;
         public IReadOnlyList<IReadablePawn> AllPlayers => _playerPawns.ToList<IReadablePawn>().AsReadOnly();
-        public IReadablePawn Winner { get; }
+        public IReadablePawn? Winner { get; }
 
         public GameEngine(IBoard board, IPathFinder pathFinder, IStepValidator stepValidator)
         {
@@ -121,7 +121,7 @@ namespace Quoridor.Core.Implementation
                 {
                     if (!_pathFinder.PathExistsToAny(pawn.Position, _winPoints[pawn]))
                     {
-                        _board.RemoveFenceIfExists(position, direction);
+                        _board.RemoveFenceIfExists(position);
                         return false;
                     }
                 }

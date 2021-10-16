@@ -6,6 +6,6 @@ namespace Quoridor.Core.Abstraction
     {
         bool TrySetPawn(IPawn pawn, Point coordinate);
         bool TryPutFence(Point coordinate, FenceDirection fenceDirection);
-        void RemoveFenceIfExists(Point position, FenceDirection direction);
+        void RemoveFenceIfExists(Point coordinate);
     }
 }
