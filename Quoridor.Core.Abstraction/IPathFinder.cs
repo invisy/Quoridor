@@ -1,8 +1,10 @@
 ﻿using Quoridor.Core.Abstraction.Common;
+using System.Collections.Generic;
 
-namespace Quoridor.Core.Abstraction;
-
-public interface IPathFinder
+namespace Quoridor.Core.Abstraction
 {
-    bool PathExistsToAny(Point point, List<Point> points);
+    public interface IPathFinder
+    {
+        bool PathExistsToAny(Point point, List<Point> points);
+    }
 }

@@ -1,10 +1,6 @@
 ﻿using Quoridor.Core.Abstraction;
 using Quoridor.Core.Abstraction.Common;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Quoridor.Core.Implementation
 {
@@ -18,7 +14,7 @@ namespace Quoridor.Core.Implementation
 
         public PathFinder(IBoard board, IStepValidator stepValidator)
         {
-            _board  = board;
+            _board = board;
             _stepValidator = stepValidator;
         }
 

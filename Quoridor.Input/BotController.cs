@@ -1,33 +1,34 @@
 ﻿using Quoridor.Core.Abstraction;
 using Quoridor.Core.Abstraction.Common;
 
-namespace Quoridor.Input;
-
-public class BotController : IPlayerController
+namespace Quoridor.Input
 {
-    IGameEngine _game;
-
-    public BotController(IGameEngine game)
+    public class BotController : IPlayerController
     {
-        _game = game;
-    }
+        IGameEngine _game;
 
-    public void Enable()
-    {
-        //Ganerate random moves
-    }
-    public void Disable()
-    {
+        public BotController(IGameEngine game)
+        {
+            _game = game;
+        }
 
-    }
+        public void Enable()
+        {
+            //Ganerate random moves
+        }
+        public void Disable()
+        {
 
-    private void OnMovePlayer(Point point)
-    {
-        //TODO
-    }
+        }
 
-    private void OnPlaceWall(Point point, FenceDirection direction)
-    {
-        //TODO
+        private void OnMovePlayer(Point point)
+        {
+            //TODO
+        }
+
+        private void OnPlaceWall(Point point, FenceDirection direction)
+        {
+            //TODO
+        }
     }
 }

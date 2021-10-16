@@ -1,7 +1,8 @@
-﻿namespace Quoridor.Core.Abstraction.Common;
-
-public enum FenceDirection
+﻿namespace Quoridor.Core.Abstraction.Common
 {
-    HORIZONTAL,
-    VERTICAL
+    public enum FenceDirection
+    {
+        HORIZONTAL,
+        VERTICAL
+    }
 }

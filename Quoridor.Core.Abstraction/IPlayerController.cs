@@ -1,7 +1,8 @@
-﻿namespace Quoridor.Core.Abstraction;
-
-public interface IPlayerController
+﻿namespace Quoridor.Core.Abstraction
 {
-    void Enable();
-    void Disable();
+    public interface IPlayerController
+    {
+        void Enable();
+        void Disable();
+    }
 }

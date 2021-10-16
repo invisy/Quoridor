@@ -1,44 +1,46 @@
 ﻿using Quoridor.Core.Abstraction;
 using Quoridor.Core.Abstraction.Common;
+using System;
 
-namespace Quoridor.Core.Implementation;
-
-public class Pawn : IPawn
+namespace Quoridor.Core.Implementation
 {
-    private IPlayerController PlayerController { get; }
-
-    public string Name { get; }
-    public int NumberOfFences { get; private set; }
-    public Point Position { get; set; } = new Point(-1, -1);
-
-    public bool IsOutOfBoard => Position.X == -1 && Position.Y == -1;
-
-    public Pawn(string name, int numberOfFences, IPlayerController playerController)
+    public class Pawn : IPawn
     {
-        Name = name;
-        PlayerController = playerController;
-        if (numberOfFences > 0)
-            NumberOfFences = numberOfFences;
-        else
-            throw new ArgumentOutOfRangeException("Number of fences must be positive!");
-    }
+        private IPlayerController PlayerController { get; }
 
-    public bool TryTakeFence()
-    {
-        if (NumberOfFences == 0)
-            return false;
+        public string Name { get; }
+        public int NumberOfFences { get; private set; }
+        public Point Position { get; set; } = new Point(-1, -1);
 
-        NumberOfFences--;
-        return true;
-    }
+        public bool IsOutOfBoard => Position.X == -1 && Position.Y == -1;
 
-    public void EnableInput()
-    {
-        PlayerController.Enable();
-    }
+        public Pawn(string name, int numberOfFences, IPlayerController playerController)
+        {
+            Name = name;
+            PlayerController = playerController;
+            if (numberOfFences > 0)
+                NumberOfFences = numberOfFences;
+            else
+                throw new ArgumentOutOfRangeException("Number of fences must be positive!");
+        }
 
-    public void DisableInput()
-    {
-        PlayerController.Disable();
+        public bool TryTakeFence()
+        {
+            if (NumberOfFences == 0)
+                return false;
+
+            NumberOfFences--;
+            return true;
+        }
+
+        public void EnableInput()
+        {
+            PlayerController.Enable();
+        }
+
+        public void DisableInput()
+        {
+            PlayerController.Disable();
+        }
     }
 }

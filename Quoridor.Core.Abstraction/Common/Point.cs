@@ -1,18 +1,21 @@
-﻿namespace Quoridor.Core.Abstraction.Common;
+﻿using System;
 
-public class Point : IEquatable<Point>
+namespace Quoridor.Core.Abstraction.Common
 {
-    public int X { get; }
-    public int Y { get; }
-
-    public Point(int x, int y)
+    public class Point : IEquatable<Point>
     {
-        X = x;
-        Y = y;
-    }
+        public int X { get; }
+        public int Y { get; }
 
-    public bool Equals(Point? other)
-    {
-        return X == other?.X && Y == other?.Y;
+        public Point(int x, int y)
+        {
+            X = x;
+            Y = y;
+        }
+
+        public bool Equals(Point? other)
+        {
+            return X == other?.X && Y == other?.Y;
+        }
     }
 }

@@ -1,15 +1,18 @@
-﻿namespace Quoridor.Core.Abstraction.Common;
+﻿using System.Collections.Generic;
 
-public class Fence
+namespace Quoridor.Core.Abstraction.Common
 {
-    private List<Point> fencePoints = new();
-    public IReadOnlyList<Point> FencePoints => fencePoints;
-
-    FenceDirection Direction { get; }
-    public Fence(Point firstPoint, Point secondPoint, FenceDirection direction)
+    public class Fence
     {
-        fencePoints.Add(firstPoint);
-        fencePoints.Add(secondPoint);
-        Direction = direction;
+        private List<Point> fencePoints = new();
+        public IReadOnlyList<Point> FencePoints => fencePoints;
+
+        FenceDirection Direction { get; }
+        public Fence(Point firstPoint, Point secondPoint, FenceDirection direction)
+        {
+            fencePoints.Add(firstPoint);
+            fencePoints.Add(secondPoint);
+            Direction = direction;
+        }
     }
 }

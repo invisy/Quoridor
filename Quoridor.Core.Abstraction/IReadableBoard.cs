@@ -1,10 +1,12 @@
 ﻿using Quoridor.Core.Abstraction.Common;
+using System.Collections.Generic;
 
-namespace Quoridor.Core.Abstraction;
-
-public interface IReadableBoard
+namespace Quoridor.Core.Abstraction
 {
-    IReadablePawn[,] Tiles { get; }
-    IReadOnlyList<Fence> Fences { get; }
-    IReadOnlyDictionary<FenceDirection, Fence[,]> Passages { get; }
+    public interface IReadableBoard
+    {
+        IReadablePawn[,] Tiles { get; }
+        IReadOnlyList<Fence> Fences { get; }
+        IReadOnlyDictionary<FenceDirection, Fence[,]> Passages { get; }
+    }
 }

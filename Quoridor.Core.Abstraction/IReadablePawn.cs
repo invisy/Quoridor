@@ -1,10 +1,11 @@
 ﻿using Quoridor.Core.Abstraction.Common;
 
-namespace Quoridor.Core.Abstraction;
-
-public interface IReadablePawn
+namespace Quoridor.Core.Abstraction
 {
-    public string Name { get; }
-    public int NumberOfFences { get; }
-    Point Position { get; }
+    public interface IReadablePawn
+    {
+        public string Name { get; }
+        public int NumberOfFences { get; }
+        Point Position { get; }
+    }
 }
