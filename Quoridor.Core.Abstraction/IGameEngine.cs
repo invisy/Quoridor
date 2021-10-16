@@ -9,7 +9,7 @@ namespace Quoridor.Core.Abstraction
         IReadableBoard Board { get; }
         IReadablePawn CurrentPlayer { get; }
         IReadOnlyList<IReadablePawn> AllPlayers { get; }
-        IReadablePawn Winner { get; }
+        IReadablePawn? Winner { get; }
         event Action GameStarted;
         event Action BoardUpdated;
         event Action GameEnded;
