@@ -32,32 +32,44 @@ namespace Quoridor.MVC
             Console.Clear();
         }
 
+        //Need to be seperated into methods
         public void DrawBoard(IBoard board)
         {
             int size = board.Tiles.GetLength(0);
-            char[,] blankBoard = prepareBoard(size.Adapt());
+            char[,] blankBoard = prepareBoard(size.AdaptForTile()-1);
 
             foreach (var el in board.Tiles)
             {
                 if(el is Pawn)
                 {
-                    blankBoard[el.Position.X.Adapt(), el.Position.Y.Adapt()] = _player;
+                    blankBoard[el.Position.X.AdaptForTile(), el.Position.Y.AdaptForTile()] = _player;
                 }
             }
-
-            foreach (var el in board.Fences)
+            //Need to be refactored
+            for (int y = 0; y < board.FenceCrossroads.GetLength(1); y++)
             {
-                /*char fence = ' ';
-                if (el.Direction == FenceDirection.HORIZONTAL)
+                for (int x = 0; x < board.FenceCrossroads.GetLength(0); x++)
                 {
-                    fence = _fenceHorizontal;
+                    if (board.FenceCrossroads[x, y] != null)
+                    {
+                        int absoluteX = x.AdaptForFence();
+                        int absoluteY = y.AdaptForFence();
+                        if (board.FenceCrossroads[x, y].Direction == FenceDirection.HORIZONTAL)
+                        {
+                            for (int i = absoluteX - 1; i <= absoluteX + 1; i++)
+                            {
+                                blankBoard[i, absoluteY] = _fenceHorizontal;
+                            } 
+                        }
+                        else
+                        {
+                            for (int i = absoluteY - 1; i <= absoluteY + 1; i++)
+                            {
+                                blankBoard[absoluteX, i] = _fenceVertical;
+                            }
+                        }
+                    }
                 }
-                else
-                {
-                    fence = _fenceVertical;
-                }*/
-                //ToDo
-
             }
 
             string[] boardToDraw = blankBoard.ToStringArray();

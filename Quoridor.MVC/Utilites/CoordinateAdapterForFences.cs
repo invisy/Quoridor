@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace Quoridor.MVC.Utilites
 {
-    public static class CoordinateAdapter
+    public static class CoordinateAdapterForFences
     {
-        public static int Adapt(this int coordinate)
+        public static int AdaptForFence(this int coordinate)
         {
-            return coordinate * 2 - 1;
+            return coordinate * 2 + 1;
         }
     }
 }
