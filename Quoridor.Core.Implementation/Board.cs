@@ -8,21 +8,18 @@ namespace Quoridor.Core.Implementation
 {
     public class Board : IBoard
     {
-        private readonly IPawn[,] _tiles;
-        private readonly Dictionary<FenceDirection, Fence[,]> _passages = new();
-        private readonly List<Fence> _fences = new();
+        private readonly IPawn?[,] _tiles;
+        private readonly Fence?[,] _fenceCrossroads;
 
-        public IReadablePawn[,] Tiles => _tiles.Clone() as IPawn[,];
-        public IReadOnlyList<Fence> Fences => _fences.AsReadOnly();
-        public IReadOnlyDictionary<FenceDirection, Fence[,]> Passages => new ReadOnlyDictionary<FenceDirection, Fence[,]>(_passages);
+        public IReadablePawn[,] Tiles => (IPawn[,])_tiles.Clone();
+        public Fence[,] FenceCrossroads => (Fence[,])_fenceCrossroads.Clone();
 
         public Board(int sideSize)
         {
             if (sideSize % 2 == 1 && sideSize > 1)
             {
                 _tiles = new IPawn[sideSize, sideSize];
-                _passages.Add(FenceDirection.HORIZONTAL, new Fence[sideSize, sideSize - 1]);
-                _passages.Add(FenceDirection.VERTICAL, new Fence[sideSize - 1, sideSize]);
+                _fenceCrossroads = new Fence[sideSize - 1, sideSize - 1];
             }
             else
                 throw new ArgumentOutOfRangeException("Only odd positive value (except 1) is allowed!");
@@ -30,7 +27,7 @@ namespace Quoridor.Core.Implementation
 
         public bool TrySetPawn(IPawn pawn, Point coordinate)
         {
-            if (!PointIsNotOutOfBoard(coordinate) || TileIsOccupied(coordinate))
+            if (!PointIsNotOutOfTiles(coordinate) || TileIsOccupied(coordinate))
                 return false;
 
             if (_tiles[pawn.Position.X, pawn.Position.Y] != pawn || !pawn.IsOutOfBoard)
@@ -42,71 +39,31 @@ namespace Quoridor.Core.Implementation
             return true;
         }
 
-        //This function must be refactored!!!
+        //Need to be refactored
         public bool TryPutFence(Point coordinate, FenceDirection fenceDirection)
         {
-            Fence[,] horizontalPassages = _passages[FenceDirection.HORIZONTAL];
-            Fence[,] verticalPassages = _passages[FenceDirection.VERTICAL];
-
-            if (coordinate.X < 0 || coordinate.Y < 0)
-                return false;
-
-            if (fenceDirection == FenceDirection.HORIZONTAL)
+            if (PointIsNotOutOfFenceCrossroads(coordinate) && FenceCrossroadIsClear(coordinate))
             {
-                if (coordinate.X < horizontalPassages.GetLength(0) - 1 && coordinate.Y < horizontalPassages.GetLength(1))
+                if(fenceDirection == FenceDirection.HORIZONTAL &&
+                    ((coordinate.X == 0 || _fenceCrossroads[coordinate.X - 1, coordinate.Y] == null) &&
+                        (coordinate.X == _fenceCrossroads.GetLength(0) - 1 || _fenceCrossroads[coordinate.X + 1, coordinate.Y] == null)))
                 {
-                    if (horizontalPassages[coordinate.X, coordinate.Y] == null && horizontalPassages[coordinate.X + 1, coordinate.Y] == null &&
-                        (verticalPassages[coordinate.X, coordinate.Y] == null && verticalPassages[coordinate.X, coordinate.Y + 1] == null ||
-                        verticalPassages[coordinate.X, coordinate.Y] != verticalPassages[coordinate.X, coordinate.Y + 1]))
-                    {
-                        Point secondCoordinate = new Point(coordinate.X + 1, coordinate.Y);
-                        Fence fence = new Fence(coordinate, secondCoordinate, fenceDirection);
-                        _fences.Add(fence);
-                        horizontalPassages[coordinate.X, coordinate.Y] = fence;
-                        horizontalPassages[coordinate.X + 1, coordinate.Y] = fence;
-
-                        return true;
-                    }
+                    return true;
                 }
-            }
-            else
-            {
-                if (coordinate.X < verticalPassages.GetLength(0) && coordinate.Y < verticalPassages.GetLength(1) - 1)
+                else if(((coordinate.Y == 0 || _fenceCrossroads[coordinate.X, coordinate.Y-1] == null) &&
+                        (coordinate.Y == _fenceCrossroads.GetLength(0) - 1 || _fenceCrossroads[coordinate.X, coordinate.Y+1] == null)))
                 {
-                    if ((horizontalPassages[coordinate.X, coordinate.Y] == null && horizontalPassages[coordinate.X + 1, coordinate.Y] == null ||
-                        horizontalPassages[coordinate.X, coordinate.Y] != horizontalPassages[coordinate.X + 1, coordinate.Y]) &&
-                        verticalPassages[coordinate.X, coordinate.Y] == null && verticalPassages[coordinate.X, coordinate.Y + 1] == null)
-                    {
-                        Point secondCoordinate = new Point(coordinate.X, coordinate.Y + 1);
-                        Fence fence = new Fence(coordinate, secondCoordinate, fenceDirection);
-                        _fences.Add(fence);
-                        horizontalPassages[coordinate.X, coordinate.Y] = fence;
-                        horizontalPassages[coordinate.X, coordinate.Y + 1] = fence;
-
-                        return true;
-                    }
+                    return true;
                 }
             }
 
             return false;
         }
-        public void RemoveFenceIfExists(Point position, FenceDirection direction)
+        public void RemoveFenceIfExists(Point coordinate)
         {
-            if (PointIsNotOutOfBoard(position))
+            if (PointIsNotOutOfFenceCrossroads(coordinate))
             {
-                Fence fence = _passages[direction][position.X, position.Y];
-                if (direction == FenceDirection.HORIZONTAL && fence == _passages[direction][position.X + 1, position.Y])
-                {
-                    _passages[direction][position.X, position.Y] = null;
-                    _passages[direction][position.X + 1, position.Y] = null;
-                    _fences.Remove(fence);
-                }
-                else if (direction == FenceDirection.VERTICAL && fence == _passages[direction][position.X, position.Y + 1])
-                {
-                    _passages[direction][position.X, position.Y] = null;
-                    _passages[direction][position.X, position.Y + 1] = null;
-                    _fences.Remove(fence);
-                }
+                _fenceCrossroads[coordinate.X, coordinate.Y] = null;
             }
         }
 
@@ -115,9 +72,19 @@ namespace Quoridor.Core.Implementation
             return _tiles[point.X, point.Y] != null;
         }
 
-        private bool PointIsNotOutOfBoard(Point point)
+        private bool PointIsNotOutOfTiles(Point point)
         {
             return point.X >= 0 || point.Y >= 0 || point.X < _tiles.GetLength(0) || point.Y < _tiles.GetLength(0);
+        }
+
+        private bool PointIsNotOutOfFenceCrossroads(Point point)
+        {
+            return point.X >= 0 || point.Y >= 0 || point.X < _fenceCrossroads.GetLength(0) || point.Y < _fenceCrossroads.GetLength(0);
+        }
+
+        private bool FenceCrossroadIsClear(Point point)
+        {
+            return _fenceCrossroads[point.X, point.Y] != null;
         }
     }
 }
