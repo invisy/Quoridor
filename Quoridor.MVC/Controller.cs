@@ -1,6 +1,7 @@
 ﻿using Quoridor.Core.Abstraction;
 using Quoridor.Core.Abstraction.Common;
 using Quoridor.Core.Implementation;
+using System;
 
 namespace Quoridor.MVC
 {
@@ -18,14 +19,16 @@ namespace Quoridor.MVC
             IGameCreator game = new TwoPlayersGameCreator();
             IGameEngine engine = game.Create();
             _view.DrawBoard(engine.Board);
-            engine.TryPlaceFence(new Point(5,5), FenceDirection.HORIZONTAL);
-            engine.TryMovePawn(new Point(4, 7));
-            engine.TryMovePawn(new Point(4, 1));
-            engine.TryMovePawn(new Point(4, 6));
-            engine.TryMovePawn(new Point(4, 2));
-            engine.TryMovePawn(new Point(5, 6));
-            engine.TryMovePawn(new Point(4, 3));
-            engine.TryMovePawn(new Point(5, 5));
+
+            engine.TryPlaceFence(new Point(0, 3), FenceDirection.HORIZONTAL);
+            engine.TryPlaceFence(new Point(2, 3), FenceDirection.HORIZONTAL);
+            engine.TryPlaceFence(new Point(4, 3), FenceDirection.HORIZONTAL);
+            engine.TryPlaceFence(new Point(6, 3), FenceDirection.HORIZONTAL);
+            engine.TryPlaceFence(new Point(7, 3), FenceDirection.VERTICAL);
+            engine.TryPlaceFence(new Point(7, 2), FenceDirection.HORIZONTAL);
+
+
+            Console.Clear();
             _view.DrawBoard(engine.Board);
         }
     }

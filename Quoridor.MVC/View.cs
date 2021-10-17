@@ -14,34 +14,61 @@ namespace Quoridor.MVC
         private char _fenceHorizontal = '—';
         private char _fenceVertical = '|';
         private char _passage = '░';
+        private char[,] _blankBoard;
 
         public View()
         {
-            Clear();
-            Console.OutputEncoding = System.Text.Encoding.UTF8;
-            Console.BackgroundColor = ConsoleColor.White;
-            Console.ForegroundColor = ConsoleColor.Black;
+
         }
 
-        public void Clear()
-        {
-            Console.Clear();
-        }
-
-        //Need to be seperated into methods
         public void DrawBoard(IReadableBoard board)
         {
             int size = board.Tiles.GetLength(0);
-            char[,] blankBoard = prepareBoard(size.AdaptForTile() - 1);
+            PrepareBoard(size.AdaptForTile() - 1);
+            PutPlayers(board);
+            PutFences(board);
 
+            string[] boardToDraw = _blankBoard.ToStringArray();
+
+            foreach (string el in boardToDraw)
+            {
+                Console.WriteLine(el);
+            }
+        }
+
+        private void PrepareBoard(int size)
+        {
+            _blankBoard = new char[size, size];
+
+            for (int y = 0; y < size; y++)
+            {
+                for (int x = 0; x < size; x++)
+                {
+                    if (y % 2 == 0 && x % 2 == 0)
+                    {
+                        _blankBoard[x, y] = _tile;
+                    }
+                    else
+                    {
+                        _blankBoard[x, y] = _passage;
+                    }
+                }
+            }
+        }
+
+        private void PutPlayers(IReadableBoard board)
+        {
             foreach (var el in board.Tiles)
             {
                 if (el is Pawn)
                 {
-                    blankBoard[el.Position.X.AdaptForTile(), el.Position.Y.AdaptForTile()] = _player;
+                    _blankBoard[el.Position.X.AdaptForTile(), el.Position.Y.AdaptForTile()] = _player;
                 }
             }
-            //Need to be refactored
+        }
+
+        private void PutFences(IReadableBoard board)
+        {
             for (int y = 0; y < board.FenceCrossroads.GetLength(1); y++)
             {
                 for (int x = 0; x < board.FenceCrossroads.GetLength(0); x++)
@@ -52,51 +79,31 @@ namespace Quoridor.MVC
                         int absoluteY = y.AdaptForFence();
                         if (board.FenceCrossroads[x, y].Direction == FenceDirection.HORIZONTAL)
                         {
-                            for (int i = absoluteX - 1; i <= absoluteX + 1; i++)
-                            {
-                                blankBoard[i, absoluteY] = _fenceHorizontal;
-                            }
+                            PutHorizontalFence(absoluteX, absoluteY);
                         }
                         else
                         {
-                            for (int i = absoluteY - 1; i <= absoluteY + 1; i++)
-                            {
-                                blankBoard[absoluteX, i] = _fenceVertical;
-                            }
+                            PutVerticalFence(absoluteX, absoluteY);
                         }
                     }
                 }
             }
+        }
 
-            string[] boardToDraw = blankBoard.ToStringArray();
-
-            Clear();
-            foreach (string el in boardToDraw)
+        private void PutHorizontalFence(int x, int y)
+        {
+            for (int i = x - 1; i <= x + 1; i++)
             {
-                Console.WriteLine(el);
+                _blankBoard[i, y] = _fenceHorizontal;
             }
         }
 
-        private char[,] prepareBoard(int size)
+        private void PutVerticalFence(int x, int y)
         {
-            char[,] board = new char[size, size];
-
-            for (int y = 0; y < size; y++)
+            for (int i = y - 1; i <= y + 1; i++)
             {
-                for (int x = 0; x < size; x++)
-                {
-                    if (y % 2 == 0 && x % 2 == 0)
-                    {
-                        board[x, y] = _tile;
-                    }
-                    else
-                    {
-                        board[x, y] = _passage;
-                    }
-                }
+                _blankBoard[x, i] = _fenceVertical;
             }
-
-            return board;
         }
     }
 }
