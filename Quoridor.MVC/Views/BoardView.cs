@@ -1,46 +1,49 @@
+using System;
+
 using Quoridor.Core.Abstraction;
 using Quoridor.Core.Abstraction.Common;
 using Quoridor.Core.Implementation;
-
 using Quoridor.MVC.Utilites;
-using System;
 
-namespace Quoridor.MVC
+namespace Quoridor.MVC.Views
 {
     public class BoardView
     {
-        private char _tile = '.';
-        private char _player = 'x';
-        private char _fenceHorizontal = '—';
-        private char _fenceVertical = '|';
-        private char _passage = '░';
+        static char _tile = '.';
+        static char _player = 'x';
+        static char _fenceHorizontal = '—';
+        static char _fenceVertical = '|';
+        static char _passage = '░';
+        static char[,] _blankBoard;
+        static string axisX = " 0 1 2 3 4 5 6 7 8";
 
-        public BoardView()
-        {
-            Console.OutputEncoding = System.Text.Encoding.UTF8;
-            Console.BackgroundColor = ConsoleColor.White;
-            Console.ForegroundColor = ConsoleColor.Black;
-        }
-
-        public void Clear()
-        {
-            Console.Clear();
-        }
-
-        //Need to be seperated into methods
         public void DrawBoard(IReadableBoard board)
         {
             int size = board.Tiles.GetLength(0);
-            char[,] blankBoard = prepareBoard(size.AdaptForTile() - 1);
+            PrepareBoard(size.AdaptForTile() - 1);
+            PutPlayers(board);
+            PutFences(board);
 
-            foreach (var el in board.Tiles)
+            string[] boardToDraw = _blankBoard.ToStringArray();
+
+            Console.WriteLine(axisX);
+            int i = 0;
+            foreach (string el in boardToDraw)
             {
-                if (el is Pawn)
+                if (i % 2 == 0)
                 {
-                    blankBoard[el.Position.X.AdaptForTile(), el.Position.Y.AdaptForTile()] = _player;
+                    Console.WriteLine((i / 2).ToString() + el);
                 }
+                else
+                {
+                    Console.WriteLine(" " + el);
+                }
+                i++;
             }
-            //Need to be refactored
+        }
+
+        static void PutFences(IReadableBoard board)
+        {
             for (int y = 0; y < board.FenceCrossroads.GetLength(1); y++)
             {
                 for (int x = 0; x < board.FenceCrossroads.GetLength(0); x++)
@@ -51,34 +54,20 @@ namespace Quoridor.MVC
                         int absoluteY = y.AdaptForFence();
                         if (board.FenceCrossroads[x, y].Direction == FenceDirection.HORIZONTAL)
                         {
-                            for (int i = absoluteX - 1; i <= absoluteX + 1; i++)
-                            {
-                                blankBoard[i, absoluteY] = _fenceHorizontal;
-                            }
+                            PutHorizontalFence(absoluteX, absoluteY);
                         }
                         else
                         {
-                            for (int i = absoluteY - 1; i <= absoluteY + 1; i++)
-                            {
-                                blankBoard[absoluteX, i] = _fenceVertical;
-                            }
+                            PutVerticalFence(absoluteX, absoluteY);
                         }
                     }
                 }
             }
-
-            string[] boardToDraw = blankBoard.ToStringArray();
-
-            Clear();
-            foreach (string el in boardToDraw)
-            {
-                Console.WriteLine(el);
-            }
         }
 
-        private char[,] prepareBoard(int size)
+        static void PrepareBoard(int size)
         {
-            char[,] board = new char[size, size];
+            _blankBoard = new char[size, size];
 
             for (int y = 0; y < size; y++)
             {
@@ -86,16 +75,41 @@ namespace Quoridor.MVC
                 {
                     if (y % 2 == 0 && x % 2 == 0)
                     {
-                        board[x, y] = _tile;
+                        _blankBoard[x, y] = _tile;
                     }
                     else
                     {
-                        board[x, y] = _passage;
+                        _blankBoard[x, y] = _passage;
                     }
                 }
             }
+        }
 
-            return board;
+        static void PutPlayers(IReadableBoard board)
+        {
+            foreach (var el in board.Tiles)
+            {
+                if (el is Pawn)
+                {
+                    _blankBoard[el.Position.X.AdaptForTile(), el.Position.Y.AdaptForTile()] = _player;
+                }
+            }
+        }
+
+        static void PutHorizontalFence(int x, int y)
+        {
+            for (int i = x - 1; i <= x + 1; i++)
+            {
+                _blankBoard[i, y] = _fenceHorizontal;
+            }
+        }
+
+        static void PutVerticalFence(int x, int y)
+        {
+            for (int i = y - 1; i <= y + 1; i++)
+            {
+                _blankBoard[x, i] = _fenceVertical;
+            }
         }
     }
 }
