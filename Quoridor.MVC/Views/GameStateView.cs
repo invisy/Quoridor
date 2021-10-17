@@ -12,7 +12,8 @@ namespace Quoridor.MVC.Views
 
             foreach (var player in pawnList)
             {
-                state += player.Name + " has " + player.NumberOfFences.ToString() + " fences" + "\t\t";
+                state += player.Name + " has " + player.NumberOfFences.ToString();
+                state += (player.NumberOfFences == 1 ? " fence" : " fences") + "\t\t";
             }
 
             state += "Current turn: " + currentPlayer.Name;
