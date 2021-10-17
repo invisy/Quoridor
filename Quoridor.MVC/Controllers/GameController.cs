@@ -59,7 +59,6 @@ namespace Quoridor.MVC
 
         void ShowBoard()
         {
-            Console.Clear();
             boardView.DrawBoard(currentGameEngine.Board);
         }
 
