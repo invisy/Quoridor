@@ -39,6 +39,10 @@ namespace Quoridor.MVC
                 {
                     Console.WriteLine((i / 2).ToString() + el);
                 }
+                else
+                {
+                    Console.WriteLine(" " + el);
+                }
                 i++;
             }
         }
