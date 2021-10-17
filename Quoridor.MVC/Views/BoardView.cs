@@ -1,9 +1,8 @@
-using System;
-
 using Quoridor.Core.Abstraction;
 using Quoridor.Core.Abstraction.Common;
 using Quoridor.Core.Implementation;
 using Quoridor.MVC.Utilites;
+using System;
 
 namespace Quoridor.MVC.Views
 {

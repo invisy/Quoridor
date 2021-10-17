@@ -35,7 +35,7 @@ namespace Quoridor.Core.Implementation
                 _tiles[pawn.Position.X, pawn.Position.Y] = null;
             pawn.Position = coordinate;
             _tiles[coordinate.X, coordinate.Y] = pawn;
-            
+
             return true;
         }
 
@@ -51,9 +51,9 @@ namespace Quoridor.Core.Implementation
                     _fenceCrossroads[coordinate.X, coordinate.Y] = new Fence(fenceDirection);
                     return true;
                 }
-                else if (fenceDirection == FenceDirection.VERTICAL && 
+                else if (fenceDirection == FenceDirection.VERTICAL &&
                          (coordinate.Y == 0 || _fenceCrossroads[coordinate.X, coordinate.Y - 1] == null || _fenceCrossroads[coordinate.X, coordinate.Y - 1].Direction == FenceDirection.HORIZONTAL) &&
-                          (coordinate.Y == _fenceCrossroads.GetLength(0) - 1 || _fenceCrossroads[coordinate.X, coordinate.Y + 1] == null || 
+                          (coordinate.Y == _fenceCrossroads.GetLength(0) - 1 || _fenceCrossroads[coordinate.X, coordinate.Y + 1] == null ||
                                                         _fenceCrossroads[coordinate.X, coordinate.Y + 1].Direction == FenceDirection.HORIZONTAL))
                 {
                     _fenceCrossroads[coordinate.X, coordinate.Y] = new Fence(fenceDirection);

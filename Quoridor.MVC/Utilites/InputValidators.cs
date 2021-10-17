@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Quoridor.MVC.Extensions;
+using System.Collections.Generic;
 using System.Linq;
-
-using Quoridor.Core.Abstraction.Common;
-using Quoridor.MVC.Extensions;
 
 namespace Quoridor.MVC.Utilites
 {
@@ -17,7 +15,7 @@ namespace Quoridor.MVC.Utilites
             int.TryParse(arguments.ElementAtOrDefault(0), out _)
             && int.TryParse(arguments.ElementAtOrDefault(1), out _);
 
-        public static bool IsCommandValid(this string command) => 
+        public static bool IsCommandValid(this string command) =>
             !string.IsNullOrWhiteSpace(command);
     }
 }

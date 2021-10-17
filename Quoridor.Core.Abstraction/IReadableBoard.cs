@@ -1,5 +1,4 @@
 ﻿using Quoridor.Core.Abstraction.Common;
-using System.Collections.Generic;
 
 namespace Quoridor.Core.Abstraction
 {

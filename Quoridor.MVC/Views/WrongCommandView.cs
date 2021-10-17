@@ -1,7 +1,6 @@
-﻿using System;
-
-using Quoridor.MVC.Extensions;
+﻿using Quoridor.MVC.Extensions;
 using Quoridor.MVC.Structures;
+using System;
 
 namespace Quoridor.MVC.Views
 {

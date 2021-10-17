@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-using Quoridor.Core.Abstraction;
+﻿using Quoridor.Core.Abstraction;
 using Quoridor.Core.Abstraction.Common;
 using Quoridor.Core.Implementation;
 using Quoridor.MVC.Extensions;
 using Quoridor.MVC.Structures;
 using Quoridor.MVC.Utilites;
 using Quoridor.MVC.Views;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Quoridor.MVC
 {
@@ -110,7 +109,7 @@ namespace Quoridor.MVC
             }
         }
 
-        void ProcessGameCommand() 
+        void ProcessGameCommand()
         {
             var gameCommand = Console.ReadLine().ToLower();
 
@@ -159,7 +158,7 @@ namespace Quoridor.MVC
 
                     GoToGame();
                     return;
-              
+
                 case "end":
                     Start();
                     return;
@@ -191,7 +190,7 @@ namespace Quoridor.MVC
         }
 
         void CreatePlayerVsBotGame()
-        { 
+        {
             IGameCreator game = new PlayerVsBotGameCreator();
             currentGameEngine = game.Create();
             currentGameEngine.GameEnded += GameEnded;

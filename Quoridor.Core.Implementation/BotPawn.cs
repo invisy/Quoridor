@@ -18,18 +18,18 @@ namespace Quoridor.Core.Implementation
             IReadablePawn currentPlayer = gameEngine.CurrentPlayer;
             IReadableBoard board = gameEngine.Board;
 
-            switch(random.Next(0, 2))
+            switch (random.Next(0, 2))
             {
                 case 0:
                     MakeRandomMove(gameEngine, random);
                     break;
                 case 1:
-                    if(!PutRandomFence(gameEngine, random))
+                    if (!PutRandomFence(gameEngine, random))
                     {
                         MakeRandomMove(gameEngine, random);
                     }
                     break;
-            }        
+            }
         }
 
         private void MakeRandomMove(IGameEngine gameEngine, Random random)
@@ -58,7 +58,7 @@ namespace Quoridor.Core.Implementation
                 freeFenceCrossroads.RemoveAt(fenceCrossroadId);
                 fenceCrossroadId = random.Next(0, freeFenceCrossroads.Count);
                 fenceDirection = (FenceDirection)random.Next(0, 2);
-                if(freeFenceCrossroads.Count > 0)
+                if (freeFenceCrossroads.Count > 0)
                     result = gameEngine.TryPlaceFence(freeFenceCrossroads[fenceCrossroadId], fenceDirection);
             }
 
