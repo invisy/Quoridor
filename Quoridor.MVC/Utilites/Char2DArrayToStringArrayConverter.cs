@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Quoridor.MVC.Utilites
 {
-    public  static class Char2DArrayToStringArrayConverter
+    public static class Char2DArrayToStringArrayConverter
     {
         public static String[] ToStringArray(this char[,] charArray)
         {

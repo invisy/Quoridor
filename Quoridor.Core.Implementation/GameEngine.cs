@@ -18,77 +18,88 @@ namespace Quoridor.Core.Implementation
         private IPathFinder _pathFinder;
         private IStepValidator _stepValidator;
 
-        public event Action GameStarted;
-        public event Action BoardUpdated;
-        public event Action GameEnded;
+        public event Action? GameStarted;
+        public event Action? BoardUpdated;
+        public event Action? GameEnded;
 
         public IReadableBoard Board => _board;
         public IReadablePawn CurrentPlayer => _currentPlayer.Value;
         public IReadOnlyList<IReadablePawn> AllPlayers => _playerPawns.ToList<IReadablePawn>().AsReadOnly();
         public IReadablePawn? Winner => _winner;
 
-        public GameEngine(IBoard board, IPathFinder pathFinder, IStepValidator stepValidator)
+        public GameEngine(IBoard board, IPathFinder pathFinder, IStepValidator stepValidator, IPawn player1, IPawn player2)
         {
             _board = board;
             _pathFinder = pathFinder;
             _stepValidator = stepValidator;
+            InitializeTwoPlayers(player1, player2);
         }
 
-        public void AddPlayer(IPawn pawn)
+        public GameEngine(IBoard board, IPathFinder pathFinder, IStepValidator stepValidator, IPawn player1, IPawn player2, IPawn player3, IPawn player4)
         {
-            int center = _board.Tiles.GetLength(0) / 2 + 1;
+            _board = board;
+            _pathFinder = pathFinder;
+            _stepValidator = stepValidator;
+            InitializeFourPlayers(player1, player2, player3, player4);
+        }
+
+        private void InitializeTwoPlayers(IPawn player1, IPawn player2)
+        {
+            int center = _board.Tiles.GetLength(0) / 2;
             int max = _board.Tiles.GetLength(0) - 1;
-            switch (_playerPawns.Count)
-            {
-                case 0:
-                    _board.TrySetPawn(pawn, new Point(center, 0));
-                    _winPoints.Add(pawn, GenerateWinPoints(new Point(0, 0), new Point(max, 0)));
-                    _playerPawns.AddLast(pawn);
-                    break;
-                case 1:
-                    _board.TrySetPawn(pawn, new Point(center, _board.Tiles.GetLength(0) - 1));
-                    _winPoints.Add(pawn, GenerateWinPoints(new Point(0, max), new Point(max, max)));
-                    _playerPawns.AddLast(pawn);
-                    break;
-                case 2:
-                    _board.TrySetPawn(pawn, new Point(max, center));
-                    _winPoints.Add(pawn, GenerateWinPoints(new Point(max, 0), new Point(max, max)));
-                    _playerPawns.AddBefore(_playerPawns.Last, pawn);    // If there are 4 players we must play clockwise
-                    break;
-                case 3:
-                    _board.TrySetPawn(pawn, new Point(0, center));
-                    _winPoints.Add(pawn, GenerateWinPoints(new Point(0, 0), new Point(0, max)));
-                    _playerPawns.AddLast(pawn);
-                    break;
-                case 4:
-                    throw new Exception("You can add only 4 players!");
-            }
+
+            _board.TrySetPawn(player1, new Point(center, 0));
+            _winPoints.Add(player1, GenerateWinPoints(new Point(0, max), new Point(max, max)));
+            _playerPawns.AddLast(player1);
+            _board.TrySetPawn(player2, new Point(center, _board.Tiles.GetLength(0) - 1));
+            _winPoints.Add(player2, GenerateWinPoints(new Point(0, 0), new Point(max, 0)));
+            _playerPawns.AddLast(player2);
+            _currentPlayer = _playerPawns.First;
+            GameStarted?.Invoke();
         }
 
-        public void Start()
+        private void InitializeFourPlayers(IPawn player1, IPawn player2, IPawn player3, IPawn player4)
         {
-            if (_playerPawns.Count != 2 || _playerPawns.Count != 4)
-                throw new Exception("Only 2 or 4 players can start game!");
+            int center = _board.Tiles.GetLength(0) / 2;
+            int max = _board.Tiles.GetLength(0) - 1;
 
-            if (_currentPlayer != null)
-                throw new Exception("Game already has started!");
+            _board.TrySetPawn(player1, new Point(center, 0));
+            _winPoints.Add(player1, GenerateWinPoints(new Point(0, max), new Point(max, max)));
+            _playerPawns.AddLast(player1);
+
+            _board.TrySetPawn(player2, new Point(max, center));
+            _winPoints.Add(player2, GenerateWinPoints(new Point(0, 0), new Point(0, max)));
+            _playerPawns.AddLast(player2);
+
+            _board.TrySetPawn(player3, new Point(center, _board.Tiles.GetLength(0) - 1));
+            _winPoints.Add(player3, GenerateWinPoints(new Point(0, 0), new Point(max, 0)));
+            _playerPawns.AddLast(player3);
+
+            _board.TrySetPawn(player4, new Point(0, center));
+            _winPoints.Add(player4, GenerateWinPoints(new Point(max, 0), new Point(max, max)));
+            _playerPawns.AddLast(player4);
 
             _currentPlayer = _playerPawns.First;
-            _currentPlayer.Value.EnableInput();
             GameStarted?.Invoke();
         }
 
         private void SwitchPlayer()
         {
-            _currentPlayer.Value.DisableInput();
             _currentPlayer = _currentPlayer.Next ?? _playerPawns.First;
-            _currentPlayer.Value.EnableInput();
+            BoardUpdated?.Invoke();
+
+            if (_currentPlayer.Value is IBotPawn)
+            {
+                IBotPawn bot = (IBotPawn)_currentPlayer.Value;
+                bot.Run(this);
+                BoardUpdated?.Invoke();
+            }
         }
 
         public bool TryMovePawn(Point position)
         {
             Point oldPosition = _currentPlayer.Value.Position;
-            if (_stepValidator.GetPossibleSteps(_board, _currentPlayer.Value.Position).Where(x => x.Equals(position)).FirstOrDefault() != null)
+            if (_stepValidator.GetPossibleSteps(_board, _currentPlayer.Value.Position).Find(x => x.Equals(position)) != null)
             {
                 if (_board.TrySetPawn(_currentPlayer.Value, position))
                 {
@@ -106,9 +117,8 @@ namespace Quoridor.Core.Implementation
                         _winner = _currentPlayer.Value;
                         GameEnded?.Invoke();
                     }
-                        
+
                     SwitchPlayer();
-                    BoardUpdated?.Invoke();
 
                     return true;
                 }
@@ -135,7 +145,6 @@ namespace Quoridor.Core.Implementation
 
                 _currentPlayer.Value.TryTakeFence();
                 SwitchPlayer();
-                BoardUpdated?.Invoke();
 
                 return true;
             }

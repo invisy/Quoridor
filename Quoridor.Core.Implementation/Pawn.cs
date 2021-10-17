@@ -4,20 +4,17 @@ using System;
 
 namespace Quoridor.Core.Implementation
 {
-    public class Pawn : IPawn
+    public abstract class Pawn : IPawn
     {
-        private IPlayerController PlayerController { get; }
-
         public string Name { get; }
         public int NumberOfFences { get; private set; }
         public Point Position { get; set; } = new Point(-1, -1);
 
         public bool IsOutOfBoard => Position.X == -1 && Position.Y == -1;
 
-        public Pawn(string name, int numberOfFences, IPlayerController playerController)
+        public Pawn(string name, int numberOfFences)
         {
             Name = name;
-            PlayerController = playerController;
             if (numberOfFences > 0)
                 NumberOfFences = numberOfFences;
             else
@@ -31,16 +28,6 @@ namespace Quoridor.Core.Implementation
 
             NumberOfFences--;
             return true;
-        }
-
-        public void EnableInput()
-        {
-            PlayerController.Enable();
-        }
-
-        public void DisableInput()
-        {
-            PlayerController.Disable();
         }
     }
 }

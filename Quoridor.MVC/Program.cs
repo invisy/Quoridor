@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Quoridor.MVC
+﻿namespace Quoridor.MVC
 {
     class Program
     {

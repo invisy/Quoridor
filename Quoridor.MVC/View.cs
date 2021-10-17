@@ -4,10 +4,6 @@ using Quoridor.Core.Implementation;
 
 using Quoridor.MVC.Utilites;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Quoridor.MVC
 {
@@ -33,14 +29,14 @@ namespace Quoridor.MVC
         }
 
         //Need to be seperated into methods
-        public void DrawBoard(IBoard board)
+        public void DrawBoard(IReadableBoard board)
         {
             int size = board.Tiles.GetLength(0);
-            char[,] blankBoard = prepareBoard(size.AdaptForTile()-1);
+            char[,] blankBoard = prepareBoard(size.AdaptForTile() - 1);
 
             foreach (var el in board.Tiles)
             {
-                if(el is Pawn)
+                if (el is Pawn)
                 {
                     blankBoard[el.Position.X.AdaptForTile(), el.Position.Y.AdaptForTile()] = _player;
                 }
@@ -59,7 +55,7 @@ namespace Quoridor.MVC
                             for (int i = absoluteX - 1; i <= absoluteX + 1; i++)
                             {
                                 blankBoard[i, absoluteY] = _fenceHorizontal;
-                            } 
+                            }
                         }
                         else
                         {
@@ -75,7 +71,7 @@ namespace Quoridor.MVC
             string[] boardToDraw = blankBoard.ToStringArray();
 
             Clear();
-            foreach(string el in boardToDraw)
+            foreach (string el in boardToDraw)
             {
                 Console.WriteLine(el);
             }
@@ -89,7 +85,7 @@ namespace Quoridor.MVC
             {
                 for (int x = 0; x < size; x++)
                 {
-                    if (y%2 == 0 && x % 2 == 0)
+                    if (y % 2 == 0 && x % 2 == 0)
                     {
                         board[x, y] = _tile;
                     }

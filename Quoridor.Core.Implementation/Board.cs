@@ -1,8 +1,6 @@
 ﻿using Quoridor.Core.Abstraction;
 using Quoridor.Core.Abstraction.Common;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 
 namespace Quoridor.Core.Implementation
 {
@@ -27,10 +25,10 @@ namespace Quoridor.Core.Implementation
 
         public bool TrySetPawn(IPawn pawn, Point coordinate)
         {
-            if (!PointIsNotOutOfTiles(coordinate) || TileIsOccupied(coordinate))
+            if (PointIsOutOfTiles(coordinate) || TileIsOccupied(coordinate))
                 return false;
 
-            if (_tiles[pawn.Position.X, pawn.Position.Y] != pawn || !pawn.IsOutOfBoard)
+            if (!pawn.IsOutOfBoard && _tiles[pawn.Position.X, pawn.Position.Y] != pawn)
                 throw new Exception("Player coordinates doesn`t match board information about them!");
 
             pawn.Position = coordinate;
@@ -42,17 +40,19 @@ namespace Quoridor.Core.Implementation
         //Need to be refactored
         public bool TryPutFence(Point coordinate, FenceDirection fenceDirection)
         {
-            if (PointIsNotOutOfFenceCrossroads(coordinate) && FenceCrossroadIsClear(coordinate))
+            if ((!PointIsOutOfFenceCrossroads(coordinate)) && FenceCrossroadIsClear(coordinate))
             {
-                if(fenceDirection == FenceDirection.HORIZONTAL &&
+                if (fenceDirection == FenceDirection.HORIZONTAL &&
                     ((coordinate.X == 0 || _fenceCrossroads[coordinate.X - 1, coordinate.Y] == null) &&
                         (coordinate.X == _fenceCrossroads.GetLength(0) - 1 || _fenceCrossroads[coordinate.X + 1, coordinate.Y] == null)))
                 {
+                    _fenceCrossroads[coordinate.X, coordinate.Y] = new Fence(fenceDirection);
                     return true;
                 }
-                else if(((coordinate.Y == 0 || _fenceCrossroads[coordinate.X, coordinate.Y-1] == null) &&
-                        (coordinate.Y == _fenceCrossroads.GetLength(0) - 1 || _fenceCrossroads[coordinate.X, coordinate.Y+1] == null)))
+                else if (((coordinate.Y == 0 || _fenceCrossroads[coordinate.X, coordinate.Y - 1] == null) &&
+                        (coordinate.Y == _fenceCrossroads.GetLength(0) - 1 || _fenceCrossroads[coordinate.X, coordinate.Y + 1] == null)))
                 {
+                    _fenceCrossroads[coordinate.X, coordinate.Y] = new Fence(fenceDirection);
                     return true;
                 }
             }
@@ -61,7 +61,7 @@ namespace Quoridor.Core.Implementation
         }
         public void RemoveFenceIfExists(Point coordinate)
         {
-            if (PointIsNotOutOfFenceCrossroads(coordinate))
+            if (!PointIsOutOfFenceCrossroads(coordinate))
             {
                 _fenceCrossroads[coordinate.X, coordinate.Y] = null;
             }
@@ -72,19 +72,19 @@ namespace Quoridor.Core.Implementation
             return _tiles[point.X, point.Y] != null;
         }
 
-        private bool PointIsNotOutOfTiles(Point point)
+        private bool PointIsOutOfTiles(Point point)
         {
-            return point.X >= 0 || point.Y >= 0 || point.X < _tiles.GetLength(0) || point.Y < _tiles.GetLength(0);
+            return point.X < 0 || point.Y < 0 || point.X >= _tiles.GetLength(0) || point.Y >= _tiles.GetLength(0);
         }
 
-        private bool PointIsNotOutOfFenceCrossroads(Point point)
+        private bool PointIsOutOfFenceCrossroads(Point point)
         {
-            return point.X >= 0 || point.Y >= 0 || point.X < _fenceCrossroads.GetLength(0) || point.Y < _fenceCrossroads.GetLength(0);
+            return point.X < 0 || point.Y < 0 || point.X >= _fenceCrossroads.GetLength(0) || point.Y >= _fenceCrossroads.GetLength(0);
         }
 
         private bool FenceCrossroadIsClear(Point point)
         {
-            return _fenceCrossroads[point.X, point.Y] != null;
+            return _fenceCrossroads[point.X, point.Y] == null;
         }
     }
 }

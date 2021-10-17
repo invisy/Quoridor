@@ -1,10 +1,6 @@
-﻿using Quoridor.Core.Implementation;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿using Quoridor.Core.Abstraction;
+using Quoridor.Core.Abstraction.Common;
+using Quoridor.Core.Implementation;
 
 namespace Quoridor.MVC
 {
@@ -14,13 +10,23 @@ namespace Quoridor.MVC
 
         public Controller()
         {
-            _view = new ();
+            _view = new();
         }
 
         public void Start()
         {
-            Board board = new Board(9);
-            _view.DrawBoard(board);
+            IGameCreator game = new TwoPlayersGameCreator();
+            IGameEngine engine = game.Create();
+            _view.DrawBoard(engine.Board);
+            engine.TryPlaceFence(new Point(5,5), FenceDirection.HORIZONTAL);
+            engine.TryMovePawn(new Point(4, 7));
+            engine.TryMovePawn(new Point(4, 1));
+            engine.TryMovePawn(new Point(4, 6));
+            engine.TryMovePawn(new Point(4, 2));
+            engine.TryMovePawn(new Point(5, 6));
+            engine.TryMovePawn(new Point(4, 3));
+            engine.TryMovePawn(new Point(5, 5));
+            _view.DrawBoard(engine.Board);
         }
     }
 }
