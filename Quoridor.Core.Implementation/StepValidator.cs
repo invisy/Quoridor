@@ -158,8 +158,8 @@ namespace Quoridor.Core.Implementation
         {
             if (point.Y > 0)
             {
-                if ((point.X == 0 || _fences[point.X-1, point.Y-1] == null || _fences[point.X - 1, point.Y - 1].Direction == FenceDirection.HORIZONTAL) &&
-                    (point.X == _boardSideLength-1 || _fences[point.X, point.Y - 1] == null || _fences[point.X, point.Y - 1].Direction == FenceDirection.HORIZONTAL))
+                if ((point.X == 0 || _fences[point.X-1, point.Y-1] == null || _fences[point.X - 1, point.Y - 1].Direction == FenceDirection.VERTICAL) &&
+                    (point.X == _boardSideLength-1 || _fences[point.X, point.Y - 1] == null || _fences[point.X, point.Y - 1].Direction == FenceDirection.VERTICAL))
                 {
                     return true;
                 }
@@ -171,8 +171,8 @@ namespace Quoridor.Core.Implementation
         {
             if (point.Y != _boardSideLength-1)
             {
-                if ((point.X == 0 || _fences[point.X - 1, point.Y] == null || _fences[point.X - 1, point.Y].Direction == FenceDirection.HORIZONTAL) &&
-                    (point.X == _boardSideLength - 1 || _fences[point.X, point.Y] == null || _fences[point.X, point.Y].Direction == FenceDirection.HORIZONTAL))
+                if ((point.X == 0 || _fences[point.X - 1, point.Y] == null || _fences[point.X - 1, point.Y].Direction == FenceDirection.VERTICAL) &&
+                    (point.X == _boardSideLength - 1 || _fences[point.X, point.Y] == null || _fences[point.X, point.Y].Direction == FenceDirection.VERTICAL))
                 {
                     return true;
                 }
@@ -184,8 +184,8 @@ namespace Quoridor.Core.Implementation
         {
             if (point.X > 0)
             {
-                if ((point.Y == 0 || _fences[point.X - 1, point.Y - 1] == null || _fences[point.X - 1, point.Y - 1].Direction == FenceDirection.VERTICAL) &&
-                    (point.Y == _boardSideLength - 1 || _fences[point.X-1, point.Y] == null || _fences[point.X-1, point.Y].Direction == FenceDirection.VERTICAL))
+                if ((point.Y == 0 || _fences[point.X - 1, point.Y - 1] == null || _fences[point.X - 1, point.Y - 1].Direction == FenceDirection.HORIZONTAL) &&
+                    (point.Y == _boardSideLength - 1 || _fences[point.X-1, point.Y] == null || _fences[point.X-1, point.Y].Direction == FenceDirection.HORIZONTAL))
                 {
                     return true;
                 }
@@ -197,8 +197,8 @@ namespace Quoridor.Core.Implementation
         {
             if (point.X != _boardSideLength - 1)
             {
-                if ((point.Y == 0 || _fences[point.X, point.Y-1] == null || _fences[point.X, point.Y-1].Direction == FenceDirection.VERTICAL) &&
-                    (point.Y == _boardSideLength - 1 || _fences[point.X, point.Y] == null || _fences[point.X, point.Y].Direction == FenceDirection.VERTICAL))
+                if ((point.Y == 0 || _fences[point.X, point.Y-1] == null || _fences[point.X, point.Y-1].Direction == FenceDirection.HORIZONTAL) &&
+                    (point.Y == _boardSideLength - 1 || _fences[point.X, point.Y] == null || _fences[point.X, point.Y].Direction == FenceDirection.HORIZONTAL))
                 {
                     return true;
                 }
