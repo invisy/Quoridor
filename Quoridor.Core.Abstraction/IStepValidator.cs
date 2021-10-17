@@ -5,6 +5,6 @@ namespace Quoridor.Core.Abstraction
 {
     public interface IStepValidator
     {
-        List<Point> GetPossibleSteps(IBoard board, Point startPoint);
+        List<Point> GetPossibleSteps(IReadableBoard board, Point startPoint);
     }
 }

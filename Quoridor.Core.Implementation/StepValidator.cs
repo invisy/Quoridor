@@ -10,7 +10,7 @@ namespace Quoridor.Core.Implementation
         private IReadablePawn[,] _tiles;
         private Fence[,] _fences;
 
-        public List<Point> GetPossibleSteps(IBoard board, Point startPoint)
+        public List<Point> GetPossibleSteps(IReadableBoard board, Point startPoint)
         {
             List<Point> points = new List<Point>();
 
