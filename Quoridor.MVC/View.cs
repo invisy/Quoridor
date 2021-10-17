@@ -15,6 +15,7 @@ namespace Quoridor.MVC
         private char _fenceVertical = '|';
         private char _passage = '░';
         private char[,] _blankBoard;
+        private string axisX = " 0 1 2 3 4 5 6 7 8";
 
         public View()
         {
@@ -30,9 +31,15 @@ namespace Quoridor.MVC
 
             string[] boardToDraw = _blankBoard.ToStringArray();
 
+            Console.WriteLine(axisX);
+            int i = 0;
             foreach (string el in boardToDraw)
             {
-                Console.WriteLine(el);
+                if (i % 2 == 0)
+                {
+                    Console.WriteLine((i / 2).ToString() + el);
+                }
+                i++;
             }
         }
 
