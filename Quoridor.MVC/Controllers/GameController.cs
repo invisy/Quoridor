@@ -18,6 +18,7 @@ namespace Quoridor.MVC
         readonly MenuView menuView;
         readonly WrongCommandView wrongCommandView;
         readonly WinnerView winnerView;
+        readonly GameStateView gameStateView;
 
         IGameEngine currentGameEngine;
 
@@ -27,6 +28,7 @@ namespace Quoridor.MVC
             menuView = new();
             wrongCommandView = new();
             winnerView = new();
+            gameStateView = new();
         }
 
         public void Start()
@@ -43,6 +45,8 @@ namespace Quoridor.MVC
 
         void GoToGame()
         {
+            Console.Clear();
+            ShowState();
             ShowBoard();
             ProcessGameCommand();
         }
@@ -59,6 +63,11 @@ namespace Quoridor.MVC
             boardView.DrawBoard(currentGameEngine.Board);
         }
 
+        void ShowState()
+        {
+            gameStateView.DrawState(currentGameEngine.AllPlayers, currentGameEngine.CurrentPlayer);
+        }
+
         void ShowWrongCommandMessage(WrongCommandReason reason)
         {
             Console.Clear();
@@ -68,6 +77,7 @@ namespace Quoridor.MVC
         void ShowBoardWithErrorMessage(WrongCommandReason reason)
         {
             Console.Clear();
+            ShowState();
             ShowBoard();
             wrongCommandView.DrawMessage(reason);
         }
