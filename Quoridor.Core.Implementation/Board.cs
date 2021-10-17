@@ -31,9 +31,11 @@ namespace Quoridor.Core.Implementation
             if (!pawn.IsOutOfBoard && _tiles[pawn.Position.X, pawn.Position.Y] != pawn)
                 throw new Exception("Player coordinates doesn`t match board information about them!");
 
+            if (!pawn.IsOutOfBoard)
+                _tiles[pawn.Position.X, pawn.Position.Y] = null;
             pawn.Position = coordinate;
-            _tiles[pawn.Position.X, pawn.Position.Y] = null;
             _tiles[coordinate.X, coordinate.Y] = pawn;
+            
             return true;
         }
 

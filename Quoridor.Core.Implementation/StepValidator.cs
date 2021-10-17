@@ -37,7 +37,8 @@ namespace Quoridor.Core.Implementation
                 else
                 {
                     Point jumpOverPlayer = new Point(point.X, point.Y - 1);
-                    if (PassageUpExists(jumpOverPlayer) && _tiles[jumpOverPlayer.X, jumpOverPlayer.Y - 1] == null)
+
+                    if (PassageUpExists(jumpOverPlayer) && (_tiles[jumpOverPlayer.X, jumpOverPlayer.Y - 1] == null))
                     {
                         points.Add(new Point(jumpOverPlayer.X, jumpOverPlayer.Y - 1));
                     }

@@ -54,8 +54,14 @@ namespace Quoridor.Core.Implementation
             _board.TrySetPawn(player2, new Point(center, _board.Tiles.GetLength(0) - 1));
             _winPoints.Add(player2, GenerateWinPoints(new Point(0, 0), new Point(max, 0)));
             _playerPawns.AddLast(player2);
+
             _currentPlayer = _playerPawns.First;
             GameStarted?.Invoke();
+            if (_currentPlayer.Value is IBotPawn)
+            {
+                IBotPawn bot = (IBotPawn)_currentPlayer.Value;
+                bot.Run(this);
+            }
         }
 
         private void InitializeFourPlayers(IPawn player1, IPawn player2, IPawn player3, IPawn player4)
@@ -81,6 +87,11 @@ namespace Quoridor.Core.Implementation
 
             _currentPlayer = _playerPawns.First;
             GameStarted?.Invoke();
+            if (_currentPlayer.Value is IBotPawn)
+            {
+                IBotPawn bot = (IBotPawn)_currentPlayer.Value;
+                bot.Run(this);
+            }
         }
 
         private void SwitchPlayer()
@@ -98,6 +109,9 @@ namespace Quoridor.Core.Implementation
 
         public bool TryMovePawn(Point position)
         {
+            if (_winner != null)
+                return false;
+
             Point oldPosition = _currentPlayer.Value.Position;
             if (_stepValidator.GetPossibleSteps(_board, _currentPlayer.Value.Position).Find(x => x.Equals(position)) != null)
             {
@@ -112,7 +126,7 @@ namespace Quoridor.Core.Implementation
                         }
                     }
 
-                    if (_winPoints[_currentPlayer.Value].Where(x => x.Equals(position)).FirstOrDefault() != null)
+                    if (_winPoints[_currentPlayer.Value].Find(x => x.Equals(position)) != null)
                     {
                         _winner = _currentPlayer.Value;
                         GameEnded?.Invoke();
@@ -129,6 +143,9 @@ namespace Quoridor.Core.Implementation
 
         public bool TryPlaceFence(Point position, FenceDirection direction)
         {
+            if (_winner != null)
+                return false;
+
             if (_currentPlayer.Value.NumberOfFences == 0)
                 return false;
 

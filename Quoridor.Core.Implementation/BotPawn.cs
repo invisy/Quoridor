@@ -24,7 +24,10 @@ namespace Quoridor.Core.Implementation
                     MakeRandomMove(gameEngine, random);
                     break;
                 case 1:
-                    PutRandomFence(gameEngine, random);
+                    if(!PutRandomFence(gameEngine, random))
+                    {
+                        MakeRandomMove(gameEngine, random);
+                    }
                     break;
             }        
         }
@@ -35,26 +38,31 @@ namespace Quoridor.Core.Implementation
             List<Point> steps = stepValidator.GetPossibleSteps(gameEngine.Board, gameEngine.CurrentPlayer.Position);
 
             int stepId = random.Next(0, steps.Count);
-            while (!gameEngine.TryMovePawn(steps[stepId]))
+            while (steps.Count > 0 && !gameEngine.TryMovePawn(steps[stepId]))
             {
                 steps.RemoveAt(stepId);
                 stepId = random.Next(0, steps.Count);
             }
         }
 
-        private void PutRandomFence(IGameEngine gameEngine, Random random)
+        private bool PutRandomFence(IGameEngine gameEngine, Random random)
         {
+            bool result = false;
             List<Point> freeFenceCrossroads = ParseFreeFenceCrossroads(gameEngine.Board.FenceCrossroads);
             int fenceCrossroadId = random.Next(0, freeFenceCrossroads.Count);
 
             FenceDirection fenceDirection = (FenceDirection)random.Next(0, 2);
-
-            while (!gameEngine.TryPlaceFence(freeFenceCrossroads[fenceCrossroadId], fenceDirection))
+            result = gameEngine.TryPlaceFence(freeFenceCrossroads[fenceCrossroadId], fenceDirection);
+            while (freeFenceCrossroads.Count > 0 && !result)
             {
                 freeFenceCrossroads.RemoveAt(fenceCrossroadId);
                 fenceCrossroadId = random.Next(0, freeFenceCrossroads.Count);
                 fenceDirection = (FenceDirection)random.Next(0, 2);
+                if(freeFenceCrossroads.Count > 0)
+                    result = gameEngine.TryPlaceFence(freeFenceCrossroads[fenceCrossroadId], fenceDirection);
             }
+
+            return result;
         }
 
         private List<Point> ParseFreeFenceCrossroads(Fence[,] fences)
