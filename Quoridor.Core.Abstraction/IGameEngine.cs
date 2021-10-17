@@ -15,5 +15,6 @@ namespace Quoridor.Core.Abstraction
         event Action GameEnded;
         bool TryMovePawn(Point position);
         bool TryPlaceFence(Point position, FenceDirection direction);
+        void Start();
     }
 }

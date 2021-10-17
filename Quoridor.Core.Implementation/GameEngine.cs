@@ -43,6 +43,16 @@ namespace Quoridor.Core.Implementation
             InitializeFourPlayers(player1, player2, player3, player4);
         }
 
+        public void Start()
+        {
+            GameStarted?.Invoke();
+            if (_currentPlayer.Value is IBotPawn)
+            {
+                IBotPawn bot = (IBotPawn)_currentPlayer.Value;
+                bot.Run(this);
+            }
+        }
+
         private void InitializeTwoPlayers(IPawn player1, IPawn player2)
         {
             int center = _board.Tiles.GetLength(0) / 2;
@@ -56,12 +66,6 @@ namespace Quoridor.Core.Implementation
             _playerPawns.AddLast(player2);
 
             _currentPlayer = _playerPawns.First;
-            GameStarted?.Invoke();
-            if (_currentPlayer.Value is IBotPawn)
-            {
-                IBotPawn bot = (IBotPawn)_currentPlayer.Value;
-                bot.Run(this);
-            }
         }
 
         private void InitializeFourPlayers(IPawn player1, IPawn player2, IPawn player3, IPawn player4)
@@ -86,12 +90,6 @@ namespace Quoridor.Core.Implementation
             _playerPawns.AddLast(player4);
 
             _currentPlayer = _playerPawns.First;
-            GameStarted?.Invoke();
-            if (_currentPlayer.Value is IBotPawn)
-            {
-                IBotPawn bot = (IBotPawn)_currentPlayer.Value;
-                bot.Run(this);
-            }
         }
 
         private void SwitchPlayer()

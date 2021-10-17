@@ -100,6 +100,9 @@ namespace Quoridor.MVC
                 case "start pve":
                     CreatePlayerVsBotGame();
                     return;
+                case "start eve":
+                    CreateBotVsBotGame();
+                    return;
                 default:
                     ShowWrongCommandMessage(WrongCommandReason.CommandNotFound);
                     ProcessMenuCommand();
@@ -184,6 +187,7 @@ namespace Quoridor.MVC
             IGameCreator game = new TwoPlayersGameCreator();
             currentGameEngine = game.Create();
             currentGameEngine.GameEnded += GameEnded;
+            currentGameEngine.Start();
         }
 
         void CreatePlayerVsBotGame()
@@ -191,6 +195,15 @@ namespace Quoridor.MVC
             IGameCreator game = new PlayerVsBotGameCreator();
             currentGameEngine = game.Create();
             currentGameEngine.GameEnded += GameEnded;
+            currentGameEngine.Start();
+        }
+
+        void CreateBotVsBotGame()
+        {
+            IGameCreator game = new BotVsBotGameCreator();
+            currentGameEngine = game.Create();
+            currentGameEngine.GameEnded += GameEnded;
+            currentGameEngine.Start();
         }
 
         bool TryPlaceFence(IList<string> fenceArguments)
