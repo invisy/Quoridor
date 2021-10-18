@@ -3,10 +3,17 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net5.0</TargetFramework>
+    <ApplicationIcon>Resources\applicationIcon.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Quoridor.Core.Implementation\Quoridor.Core.Implementation.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Resources\applicationIcon.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
