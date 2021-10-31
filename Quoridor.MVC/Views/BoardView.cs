@@ -51,7 +51,7 @@ namespace Quoridor.MVC.Views
                     {
                         int absoluteX = x.AdaptForFence();
                         int absoluteY = y.AdaptForFence();
-                        if (board.FenceCrossroads[x, y].Direction == FenceDirection.HORIZONTAL)
+                        if (board.FenceCrossroads[x, y].Direction == FenceDirection.Horizontal)
                         {
                             PutHorizontalFence(absoluteX, absoluteY);
                         }

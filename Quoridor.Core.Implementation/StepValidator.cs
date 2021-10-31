@@ -162,8 +162,8 @@ namespace Quoridor.Core.Implementation
                 Fence? leftFence = !PlayerIsOnLeftSide(playerCoordinate) ? _fences[playerCoordinate.X - 1, playerCoordinate.Y - 1] : default;
                 Fence? rightFence = !PlayerIsOnRightSide(playerCoordinate) ? _fences[playerCoordinate.X, playerCoordinate.Y - 1] : default;
 
-                bool blockedByLeftFence = (leftFence?.Direction == FenceDirection.HORIZONTAL);
-                bool blockedByRightFence = (rightFence?.Direction == FenceDirection.HORIZONTAL);
+                bool blockedByLeftFence = (leftFence?.Direction == FenceDirection.Horizontal);
+                bool blockedByRightFence = (rightFence?.Direction == FenceDirection.Horizontal);
 
                 return !blockedByLeftFence && !blockedByRightFence;
             }
@@ -177,8 +177,8 @@ namespace Quoridor.Core.Implementation
                 Fence? leftFence = !PlayerIsOnLeftSide(playerCoordinate) ? _fences[playerCoordinate.X - 1, playerCoordinate.Y] : default;
                 Fence? rightFence = !PlayerIsOnRightSide(playerCoordinate) ? _fences[playerCoordinate.X, playerCoordinate.Y] : default;
 
-                bool blockedByLeftFence = (leftFence?.Direction == FenceDirection.HORIZONTAL);
-                bool blockedByRightFence = (rightFence?.Direction == FenceDirection.HORIZONTAL);
+                bool blockedByLeftFence = (leftFence?.Direction == FenceDirection.Horizontal);
+                bool blockedByRightFence = (rightFence?.Direction == FenceDirection.Horizontal);
 
                 return !blockedByLeftFence && !blockedByRightFence;
             }
@@ -192,8 +192,8 @@ namespace Quoridor.Core.Implementation
                 Fence? upperFence = !PlayerIsOnTopSide(playerCoordinate) ? _fences[playerCoordinate.X - 1, playerCoordinate.Y - 1] : default;
                 Fence? lowerFence = !PlayerIsOnBottomSide(playerCoordinate) ? _fences[playerCoordinate.X - 1, playerCoordinate.Y] : default;
 
-                bool blockedByUpperFence = (upperFence?.Direction == FenceDirection.VERTICAL);
-                bool blockedByLowerFence = (lowerFence?.Direction == FenceDirection.VERTICAL);
+                bool blockedByUpperFence = (upperFence?.Direction == FenceDirection.Vertical);
+                bool blockedByLowerFence = (lowerFence?.Direction == FenceDirection.Vertical);
 
                 return !blockedByUpperFence && !blockedByLowerFence;
             }
@@ -207,8 +207,8 @@ namespace Quoridor.Core.Implementation
                 Fence? upperFence = !PlayerIsOnTopSide(playerCoordinate) ? _fences[playerCoordinate.X, playerCoordinate.Y - 1] : default;
                 Fence? lowerFence = !PlayerIsOnBottomSide(playerCoordinate) ? _fences[playerCoordinate.X, playerCoordinate.Y] : default;
 
-                bool blockedByUpperFence = (upperFence?.Direction == FenceDirection.VERTICAL);
-                bool blockedByLowerFence = (lowerFence?.Direction == FenceDirection.VERTICAL);
+                bool blockedByUpperFence = (upperFence?.Direction == FenceDirection.Vertical);
+                bool blockedByLowerFence = (lowerFence?.Direction == FenceDirection.Vertical);
 
                 return !blockedByUpperFence && !blockedByLowerFence;
             }

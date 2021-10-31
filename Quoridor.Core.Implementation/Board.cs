@@ -44,17 +44,17 @@ namespace Quoridor.Core.Implementation
         {
             if ((!PointIsOutOfFenceCrossroads(coordinate)) && FenceCrossroadIsClear(coordinate))
             {
-                if (fenceDirection == FenceDirection.HORIZONTAL &&
-                    (coordinate.X == 0 || _fenceCrossroads[coordinate.X - 1, coordinate.Y] == null || _fenceCrossroads[coordinate.X - 1, coordinate.Y].Direction == FenceDirection.VERTICAL) &&
-                     (coordinate.X == _fenceCrossroads.GetLength(0) - 1 || _fenceCrossroads[coordinate.X + 1, coordinate.Y] == null || _fenceCrossroads[coordinate.X + 1, coordinate.Y].Direction == FenceDirection.VERTICAL))
+                if (fenceDirection == FenceDirection.Horizontal &&
+                    (coordinate.X == 0 || _fenceCrossroads[coordinate.X - 1, coordinate.Y] == null || _fenceCrossroads[coordinate.X - 1, coordinate.Y].Direction == FenceDirection.Vertical) &&
+                     (coordinate.X == _fenceCrossroads.GetLength(0) - 1 || _fenceCrossroads[coordinate.X + 1, coordinate.Y] == null || _fenceCrossroads[coordinate.X + 1, coordinate.Y].Direction == FenceDirection.Vertical))
                 {
                     _fenceCrossroads[coordinate.X, coordinate.Y] = new Fence(fenceDirection);
                     return true;
                 }
-                else if (fenceDirection == FenceDirection.VERTICAL &&
-                         (coordinate.Y == 0 || _fenceCrossroads[coordinate.X, coordinate.Y - 1] == null || _fenceCrossroads[coordinate.X, coordinate.Y - 1].Direction == FenceDirection.HORIZONTAL) &&
+                else if (fenceDirection == FenceDirection.Vertical &&
+                         (coordinate.Y == 0 || _fenceCrossroads[coordinate.X, coordinate.Y - 1] == null || _fenceCrossroads[coordinate.X, coordinate.Y - 1].Direction == FenceDirection.Horizontal) &&
                           (coordinate.Y == _fenceCrossroads.GetLength(0) - 1 || _fenceCrossroads[coordinate.X, coordinate.Y + 1] == null ||
-                                                        _fenceCrossroads[coordinate.X, coordinate.Y + 1].Direction == FenceDirection.HORIZONTAL))
+                                                        _fenceCrossroads[coordinate.X, coordinate.Y + 1].Direction == FenceDirection.Horizontal))
                 {
                     _fenceCrossroads[coordinate.X, coordinate.Y] = new Fence(fenceDirection);
                     return true;
