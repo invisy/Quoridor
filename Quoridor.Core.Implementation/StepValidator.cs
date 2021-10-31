@@ -155,57 +155,85 @@ namespace Quoridor.Core.Implementation
             return points;
         }
 
-        private bool PassageUpExists(Point point)
+        private bool PassageUpExists(Point playerCoordinate)
         {
-            if (point.Y > 0)
+            if(!PlayerIsOnTopSide(playerCoordinate))
             {
-                if ((point.X == 0 || _fences[point.X - 1, point.Y - 1] == null || _fences[point.X - 1, point.Y - 1].Direction == FenceDirection.VERTICAL) &&
-                    (point.X == _boardSideLength - 1 || _fences[point.X, point.Y - 1] == null || _fences[point.X, point.Y - 1].Direction == FenceDirection.VERTICAL))
-                {
-                    return true;
-                }
+                Fence? leftFence = !PlayerIsOnLeftSide(playerCoordinate) ? _fences[playerCoordinate.X - 1, playerCoordinate.Y - 1] : default;
+                Fence? rightFence = !PlayerIsOnRightSide(playerCoordinate) ? _fences[playerCoordinate.X, playerCoordinate.Y - 1] : default;
+
+                bool blockedByLeftFence = (leftFence?.Direction == FenceDirection.HORIZONTAL);
+                bool blockedByRightFence = (rightFence?.Direction == FenceDirection.HORIZONTAL);
+
+                return !blockedByLeftFence && !blockedByRightFence;
+            }
+            
+            return false;
+        }
+        private bool PassageDownExists(Point playerCoordinate)
+        {
+            if(!PlayerIsOnBottomSide(playerCoordinate))
+            {
+                Fence? leftFence = !PlayerIsOnLeftSide(playerCoordinate) ? _fences[playerCoordinate.X - 1, playerCoordinate.Y] : default;
+                Fence? rightFence = !PlayerIsOnRightSide(playerCoordinate) ? _fences[playerCoordinate.X, playerCoordinate.Y] : default;
+
+                bool blockedByLeftFence = (leftFence?.Direction == FenceDirection.HORIZONTAL);
+                bool blockedByRightFence = (rightFence?.Direction == FenceDirection.HORIZONTAL);
+
+                return !blockedByLeftFence && !blockedByRightFence;
             }
 
             return false;
         }
-        private bool PassageDownExists(Point point)
+        private bool PassageLeftExists(Point playerCoordinate)
         {
-            if (point.Y != _boardSideLength - 1)
+            if(!PlayerIsOnLeftSide(playerCoordinate))
             {
-                if ((point.X == 0 || _fences[point.X - 1, point.Y] == null || _fences[point.X - 1, point.Y].Direction == FenceDirection.VERTICAL) &&
-                    (point.X == _boardSideLength - 1 || _fences[point.X, point.Y] == null || _fences[point.X, point.Y].Direction == FenceDirection.VERTICAL))
-                {
-                    return true;
-                }
+                Fence? upperFence = !PlayerIsOnTopSide(playerCoordinate) ? _fences[playerCoordinate.X - 1, playerCoordinate.Y - 1] : default;
+                Fence? lowerFence = !PlayerIsOnBottomSide(playerCoordinate) ? _fences[playerCoordinate.X - 1, playerCoordinate.Y] : default;
+
+                bool blockedByUpperFence = (upperFence?.Direction == FenceDirection.VERTICAL);
+                bool blockedByLowerFence = (lowerFence?.Direction == FenceDirection.VERTICAL);
+
+                return !blockedByUpperFence && !blockedByLowerFence;
             }
 
             return false;
         }
-        private bool PassageLeftExists(Point point)
+        private bool PassageRightExists(Point playerCoordinate)
         {
-            if (point.X > 0)
+            if(!PlayerIsOnRightSide(playerCoordinate))
             {
-                if ((point.Y == 0 || _fences[point.X - 1, point.Y - 1] == null || _fences[point.X - 1, point.Y - 1].Direction == FenceDirection.HORIZONTAL) &&
-                    (point.Y == _boardSideLength - 1 || _fences[point.X - 1, point.Y] == null || _fences[point.X - 1, point.Y].Direction == FenceDirection.HORIZONTAL))
-                {
-                    return true;
-                }
+                Fence? upperFence = !PlayerIsOnTopSide(playerCoordinate) ? _fences[playerCoordinate.X, playerCoordinate.Y - 1] : default;
+                Fence? lowerFence = !PlayerIsOnBottomSide(playerCoordinate) ? _fences[playerCoordinate.X, playerCoordinate.Y] : default;
+
+                bool blockedByUpperFence = (upperFence?.Direction == FenceDirection.VERTICAL);
+                bool blockedByLowerFence = (lowerFence?.Direction == FenceDirection.VERTICAL);
+
+                return !blockedByUpperFence && !blockedByLowerFence;
             }
 
             return false;
         }
-        private bool PassageRightExists(Point point)
-        {
-            if (point.X != _boardSideLength - 1)
-            {
-                if ((point.Y == 0 || _fences[point.X, point.Y - 1] == null || _fences[point.X, point.Y - 1].Direction == FenceDirection.HORIZONTAL) &&
-                    (point.Y == _boardSideLength - 1 || _fences[point.X, point.Y] == null || _fences[point.X, point.Y].Direction == FenceDirection.HORIZONTAL))
-                {
-                    return true;
-                }
-            }
 
-            return false;
+        private bool PlayerIsOnLeftSide(Point playerPosition)
+        {
+            return (playerPosition.X == 0);
+        }
+
+        private bool PlayerIsOnRightSide(Point playerPosition)
+        {
+            return (playerPosition.X == _boardSideLength - 1);
+        }
+
+        private bool PlayerIsOnTopSide(Point playerPosition)
+        {
+            return (playerPosition.Y == 0);
+        }
+
+        private bool PlayerIsOnBottomSide(Point playerPosition)
+        {
+            return (playerPosition.Y == _boardSideLength - 1);
         }
     }
 }
