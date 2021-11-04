@@ -7,7 +7,9 @@ using Quoridor.MVC.Utilites;
 using Quoridor.MVC.Views;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Threading;
 
 namespace Quoridor.MVC
 {
@@ -177,7 +179,6 @@ namespace Quoridor.MVC
             winnerView.DrawWinner(winner.Name);
 
             Console.ReadKey();
-
             Start();
         }
 
@@ -192,7 +193,7 @@ namespace Quoridor.MVC
         void CreatePlayerVsBotGame()
         {
             IGameCreator game = new PlayerVsBotGameCreator();
-            currentGameEngine = game.Create();
+            currentGameEngine = game.Create(PawnColor.White);
             currentGameEngine.GameEnded += GameEnded;
             currentGameEngine.Start();
         }
