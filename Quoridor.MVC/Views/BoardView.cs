@@ -14,7 +14,7 @@ namespace Quoridor.MVC.Views
         static char _fenceVertical = '|';
         static char _passage = '░';
         static char[,] _blankBoard;
-        static string axisX = " 0 1 2 3 4 5 6 7 8";
+        static string axisX = " A B C D E F G H I";
 
         public void DrawBoard(IReadableBoard board)
         {
@@ -31,7 +31,7 @@ namespace Quoridor.MVC.Views
             {
                 if (i % 2 == 0)
                 {
-                    Console.WriteLine((i / 2).ToString() + el);
+                    Console.WriteLine((i / 2) + 1 + el);
                 }
                 else
                 {
