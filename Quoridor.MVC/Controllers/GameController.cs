@@ -93,14 +93,11 @@ namespace Quoridor.MVC
 
             switch (menuCommand)
             {
-                case "start pvp":
-                    CreateTwoPlayersGame();
+                case "white":
+                    CreatePlayerVsBotGame(PlayerColor.White);
                     return;
-                case "start pve":
-                    CreatePlayerVsBotGame();
-                    return;
-                case "start eve":
-                    CreateBotVsBotGame();
+                case "black":
+                    CreatePlayerVsBotGame(PlayerColor.Black);
                     return;
                 default:
                     ShowWrongCommandMessage(WrongCommandReason.CommandNotFound);
@@ -111,7 +108,7 @@ namespace Quoridor.MVC
 
         void ProcessGameCommand()
         {
-            var gameCommand = Console.ReadLine().ToLower();
+            var gameCommand = Console.ReadLine();
 
             if (!gameCommand.IsCommandValid())
             {
@@ -120,14 +117,15 @@ namespace Quoridor.MVC
                 return;
             }
 
-            var splittedCommand = gameCommand.Split(' ');
+            var splitCommand = gameCommand.ToLower().Split(' ');
 
-            var commandType = splittedCommand.First();
-            var commandArguments = splittedCommand[1..];
+            var commandType = splitCommand.ElementAt(0);
+            IEnumerable<char> commandArguments = splitCommand.ElementAtOrDefault(1);
 
             switch (commandType)
             {
-                case "movepawn":
+                case "jump":
+                case "move":
                     if (!commandArguments.IsMovePawnArgumentsValid())
                     {
                         ShowBoardWithErrorMessage(WrongCommandReason.InvalidArguments);
@@ -143,7 +141,7 @@ namespace Quoridor.MVC
                     GoToGame();
                     return;
 
-                case "placewall":
+                case "wall":
                     if (!commandArguments.IsPlaceFenceArgumentsValid())
                     {
                         ShowBoardWithErrorMessage(WrongCommandReason.InvalidArguments);
@@ -162,6 +160,7 @@ namespace Quoridor.MVC
                 case "end":
                     Start();
                     return;
+
                 default:
                     ShowBoardWithErrorMessage(WrongCommandReason.CommandNotFound);
                     ProcessGameCommand();
@@ -181,50 +180,31 @@ namespace Quoridor.MVC
             Start();
         }
 
-        void CreateTwoPlayersGame()
+        void CreatePlayerVsBotGame(PlayerColor color)
         {
-            IGameCreator game = new TwoPlayersGameCreator();
+            var game = new PlayerVsBotGameCreator {PlayerColor = color};
+
             currentGameEngine = game.Create();
             currentGameEngine.GameEnded += GameEnded;
             currentGameEngine.Start();
         }
 
-        void CreatePlayerVsBotGame()
+        bool TryPlaceFence(IEnumerable<char> fenceArguments)
         {
-            IGameCreator game = new PlayerVsBotGameCreator();
-            currentGameEngine = game.Create();
-            currentGameEngine.GameEnded += GameEnded;
-            currentGameEngine.Start();
+            var x = (int)Enum.Parse<HorizontalNotation>(fenceArguments.ElementAt(0).ToString());
+            var y = int.Parse(fenceArguments.ElementAt(1).ToString()) - 1;
+
+            var direction = fenceArguments.ElementAt(2).ParseFenceDirection().Value;
+
+            return currentGameEngine.TryPlaceFence(new Point(x, y), direction);
         }
 
-        void CreateBotVsBotGame()
+        bool TryMovePawn(IEnumerable<char> pawnArguments)
         {
-            IGameCreator game = new BotVsBotGameCreator();
-            currentGameEngine = game.Create();
-            currentGameEngine.GameEnded += GameEnded;
-            currentGameEngine.Start();
-        }
-
-        bool TryPlaceFence(IList<string> fenceArguments)
-        {
-            var x = int.Parse(fenceArguments[0]);
-            var y = int.Parse(fenceArguments[1]);
-
-            var point = new Point(x, y);
-
-            var direction = fenceArguments[2].ParseFenceDirection().Value;
-
-            return currentGameEngine.TryPlaceFence(point, direction);
-        }
-
-        bool TryMovePawn(IList<string> pawnArguments)
-        {
-            var x = int.Parse(pawnArguments[0]);
-            var y = int.Parse(pawnArguments[1]);
-
-            var point = new Point(x, y);
-
-            return currentGameEngine.TryMovePawn(point);
+            var x = (int)Enum.Parse<HorizontalNotation>(pawnArguments.ElementAt(0).ToString());
+            var y = int.Parse(pawnArguments.ElementAt(1).ToString()) - 1;
+            
+            return currentGameEngine.TryMovePawn(new Point(x, y));
         }
     }
 }

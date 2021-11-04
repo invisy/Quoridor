@@ -4,22 +4,22 @@ namespace Quoridor.MVC.Extensions
 {
     public static class FenceDirectionExtensions
     {
-        public static FenceDirection? ParseFenceDirection(this string stringDirection)
+        public static FenceDirection? ParseFenceDirection(this char stringDirection)
         {
             return stringDirection switch
             {
-                "h" => FenceDirection.HORIZONTAL,
-                "v" => FenceDirection.VERTICAL,
+                'h' => FenceDirection.HORIZONTAL,
+                'v' => FenceDirection.VERTICAL,
                 _ => default
             };
         }
 
-        public static bool IsFenceDirection(this string stringDirection)
+        public static bool IsFenceDirection(this char stringDirection)
         {
             return stringDirection switch
             {
-                "h" => true,
-                "v" => true,
+                'h' => true,
+                'v' => true,
                 _ => false
             };
         }

@@ -4,6 +4,8 @@ namespace Quoridor.Core.Implementation
 {
     public class PlayerVsBotGameCreator : IGameCreator
     {
+        public PlayerColor PlayerColor { get; set; }
+
         public IGameEngine Create()
         {
             int fencesNumber = 10;
@@ -15,7 +17,9 @@ namespace Quoridor.Core.Implementation
             IPawn player1 = new LocalPlayerPawn("Player1", fencesNumber);
             IPawn player2 = new RandomBotPawn("Bot1", fencesNumber);
 
-            IGameEngine gameEngine = new GameEngine(board, pathFinder, stepValidator, player1, player2);
+            IGameEngine gameEngine = PlayerColor == PlayerColor.Black 
+                ? new GameEngine(board, pathFinder, stepValidator, player1, player2) 
+                : new GameEngine(board, pathFinder, stepValidator, player2, player1);
 
             return gameEngine;
         }
