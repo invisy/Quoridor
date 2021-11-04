@@ -161,6 +161,22 @@ namespace Quoridor.MVC
                     GoToGame();
                     return;
 
+                case "jump":
+                    if (!commandArguments.IsMovePawnArgumentsValid())
+                    {
+                        ShowBoardWithErrorMessage(WrongCommandReason.InvalidArguments);
+                        ProcessGameCommand();
+                    }
+
+                    if (!TryJump(commandArguments))
+                    {
+                        ShowBoardWithErrorMessage(WrongCommandReason.UnableToMovePawn);
+                        ProcessGameCommand();
+                    }
+
+                    GoToGame();
+                    return;
+
                 case "end":
                     Start();
                     return;
@@ -226,6 +242,16 @@ namespace Quoridor.MVC
             var point = new Point(x, y);
 
             return currentGameEngine.TryMovePawn(point);
+        }
+
+        bool TryJump(IList<string> pawnArguments)
+        {
+            var x = int.Parse(pawnArguments[0]);
+            var y = int.Parse(pawnArguments[1]);
+
+            var point = new Point(x, y);
+
+            return currentGameEngine.TryMovePawn(point, true);
         }
     }
 }

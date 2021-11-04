@@ -18,7 +18,7 @@ namespace Quoridor.Core.Implementation
             IReadablePawn currentPlayer = gameEngine.CurrentPlayer;
             IReadableBoard board = gameEngine.Board;
 
-            switch (0)
+            switch (random.Next(0,2))
             {
                 case 0:
                     MakeRandomMove(gameEngine, random);
@@ -35,7 +35,8 @@ namespace Quoridor.Core.Implementation
         private void MakeRandomMove(IGameEngine gameEngine, Random random)
         {
             IStepsProvider stepsProvider = new StepsProvider();
-            List<Point> steps = stepsProvider.GetPossibleSteps(gameEngine.Board, Position);
+            IReadableBoard currentBoard = gameEngine.Board;
+            List<Point> steps = stepsProvider.GetPossibleSteps(currentBoard, currentBoard.GetPawnPosition(this));
 
             while (steps.Count > 0)
             {

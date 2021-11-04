@@ -1,11 +1,13 @@
 ﻿using Quoridor.Core.Abstraction;
 using Quoridor.Core.Abstraction.Common;
 using System;
+using System.Collections.Generic;
 
 namespace Quoridor.Core.Implementation
 {
     public class Board : IBoard
     {
+        private readonly Dictionary<IReadablePawn, Point> _pawnPositions = new(); // cache players positions
         private readonly IPawn?[,] _tiles;
         private readonly Fence?[,] _fenceCrossroads;
 
@@ -23,17 +25,20 @@ namespace Quoridor.Core.Implementation
                 throw new ArgumentOutOfRangeException("Only odd positive value (except 1) is allowed!");
         }
 
+        public Point GetPawnPosition(IReadablePawn pawn)
+        {
+            return _pawnPositions[pawn];
+        }
+
         public bool TrySetPawn(IPawn pawn, Point coordinate)
         {
             if (PointIsOutOfTiles(coordinate) || TileIsOccupied(coordinate))
                 return false;
 
-            if (!pawn.IsOutOfBoard && _tiles[pawn.Position.X, pawn.Position.Y] != pawn)
-                throw new Exception("Player coordinates doesn`t match board information about them!");
+            if (_pawnPositions.ContainsKey(pawn))
+                _tiles[_pawnPositions[pawn].X, _pawnPositions[pawn].Y] = null;
 
-            if (!pawn.IsOutOfBoard)
-                _tiles[pawn.Position.X, pawn.Position.Y] = null;
-            pawn.Position = coordinate;
+            _pawnPositions[pawn] = coordinate;
             _tiles[coordinate.X, coordinate.Y] = pawn;
 
             return true;

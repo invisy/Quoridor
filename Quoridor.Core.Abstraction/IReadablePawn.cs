@@ -6,7 +6,6 @@ namespace Quoridor.Core.Abstraction
     {
         public string Name { get; }
         public int NumberOfFences { get; }
-        public Point Position { get; }
         public PawnColor Color { get; }
     }
 }

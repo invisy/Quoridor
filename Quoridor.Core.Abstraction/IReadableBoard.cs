@@ -6,5 +6,6 @@ namespace Quoridor.Core.Abstraction
     {
         IReadablePawn[,] Tiles { get; }
         Fence[,] FenceCrossroads { get; }
+        Point GetPawnPosition(IReadablePawn pawn);
     }
 }

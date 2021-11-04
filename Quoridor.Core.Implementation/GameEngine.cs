@@ -37,6 +37,11 @@ namespace Quoridor.Core.Implementation
             InitializeTwoPlayers(player1, player2);
         }
 
+        public IEnumerable<Point> GetWinPointsForPlayer(IPawn pawn)
+        {
+            return _winPoints[pawn].AsReadOnly();
+        }
+
         public void Start()
         {
             GameStarted?.Invoke();
@@ -87,12 +92,12 @@ namespace Quoridor.Core.Implementation
             if (_winner != null)
                 return false;
 
-            Point oldPosition = _currentPlayer.Value.Position;
+            Point oldPosition = _board.GetPawnPosition(_currentPlayer.Value);
             bool moveIsPossible = false;
             if (isJump)
-                moveIsPossible = _stepsProvider.GetPossibleJumps(Board, _currentPlayer.Value.Position).Where(x => x.Equals(position)).Cast<Point?>().FirstOrDefault() != null;
+                moveIsPossible = _stepsProvider.GetPossibleJumps(Board, oldPosition).Where(x => x.Equals(position)).Cast<Point?>().FirstOrDefault() != null;
             else
-                moveIsPossible = _stepsProvider.GetPossibleSteps(Board, _currentPlayer.Value.Position).Where(x => x.Equals(position)).Cast<Point?>().FirstOrDefault() != null;
+                moveIsPossible = _stepsProvider.GetPossibleSteps(Board, oldPosition).Where(x => x.Equals(position)).Cast<Point?>().FirstOrDefault() != null;
 
             if (moveIsPossible)
             {
@@ -100,7 +105,7 @@ namespace Quoridor.Core.Implementation
                 {
                     foreach (IPawn pawn in _playerPawns)
                     {
-                        if (!_pathFinder.PathExistsToAny(Board, pawn.Position, _winPoints[pawn]))
+                        if (!_pathFinder.PathExistsToAny(Board, _board.GetPawnPosition(pawn), _winPoints[pawn]))
                         {
                             _board.TrySetPawn(_currentPlayer.Value, oldPosition);
                             return false;
@@ -113,7 +118,7 @@ namespace Quoridor.Core.Implementation
                         GameEnded?.Invoke();
                     }
                     SwitchPlayer();
-                    MoveHistory.Push(new Move(position, _currentPlayer.Value.Color, isJump));
+                    MoveHistory.Push(new Move(position, CurrentPlayer, isJump));
                     return true;
                 }
             }
@@ -133,7 +138,7 @@ namespace Quoridor.Core.Implementation
             {
                 foreach (IPawn pawn in _playerPawns)
                 {
-                    if (!_pathFinder.PathExistsToAny(Board, pawn.Position, _winPoints[pawn]))
+                    if (!_pathFinder.PathExistsToAny(Board, _board.GetPawnPosition(pawn), _winPoints[pawn]))
                     {
                         _board.RemoveFenceIfExists(position);
                         return false;
@@ -142,7 +147,7 @@ namespace Quoridor.Core.Implementation
 
                 _currentPlayer.Value.TryTakeFence();
                 SwitchPlayer();
-                MoveHistory.Push(new Move(position, direction, _currentPlayer.Value.Color));
+                MoveHistory.Push(new Move(position, direction, CurrentPlayer));
                 return true;
             }
 

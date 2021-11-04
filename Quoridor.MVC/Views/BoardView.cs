@@ -89,12 +89,12 @@ namespace Quoridor.MVC.Views
         {
             foreach (var el in board.Tiles)
             {
-                if (el is Pawn)
+                if (el is IReadablePawn)
                 {
                     if(el.Color == PawnColor.White)
-                        _blankBoard[el.Position.X.AdaptForTile(), el.Position.Y.AdaptForTile()] = _player;
+                        _blankBoard[board.GetPawnPosition(el).X.AdaptForTile(), board.GetPawnPosition(el).Y.AdaptForTile()] = _player;
                     else
-                        _blankBoard[el.Position.X.AdaptForTile(), el.Position.Y.AdaptForTile()] = _player2;
+                        _blankBoard[board.GetPawnPosition(el).X.AdaptForTile(), board.GetPawnPosition(el).Y.AdaptForTile()] = _player2;
                 }
             }
         }

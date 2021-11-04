@@ -4,28 +4,28 @@ namespace Quoridor.Core.Abstraction.Common
 {
     public class Move
     {
-        MoveType MoveType { get; }
-        PawnColor Color { get; }
-        FenceDirection? FenceDirection { get; } = null;
-        Point? FencePosition { get; } = null;
-        Point? PlayerPosition { get; } = null;
+        public IReadablePawn MoveInitiator { get; }
+        public MoveType MoveType { get; }
+        public FenceDirection FenceDirection { get; }
+        public Point FencePosition { get; }
+        public Point PlayerPosition { get; }
 
-        public Move(Point position, FenceDirection direction, PawnColor color)
+        public Move(Point position, FenceDirection direction, IReadablePawn moveInitiator)
         {
             MoveType = MoveType.PlaceFence;
             FencePosition = position;
             FenceDirection = direction;
-            Color = color;
+            MoveInitiator = moveInitiator;
         }
 
-        public Move(Point position, PawnColor color, bool isJump = false)
+        public Move(Point position, IReadablePawn moveInitiator, bool isJump = false)
         {
             if (isJump)
                 MoveType = MoveType.Jump;
             else
                 MoveType = MoveType.Step;
             PlayerPosition = position;
-            Color = color;
+            MoveInitiator = moveInitiator;
         }
     }
 }
