@@ -8,8 +8,8 @@ namespace Quoridor.MVC.Extensions
         {
             return stringDirection switch
             {
-                "h" => FenceDirection.HORIZONTAL,
-                "v" => FenceDirection.VERTICAL,
+                'h' => FenceDirection.Horizontal,
+                'v' => FenceDirection.Vertical,
                 _ => default
             };
         }

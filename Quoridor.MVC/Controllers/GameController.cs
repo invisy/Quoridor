@@ -94,10 +94,10 @@ namespace Quoridor.MVC
             switch (menuCommand)
             {
                 case "white":
-                    CreatePlayerVsBotGame(PlayerColor.White);
+                    CreatePlayerVsBotGame(PawnColor.White);
                     return;
                 case "black":
-                    CreatePlayerVsBotGame(PlayerColor.Black);
+                    CreatePlayerVsBotGame(PawnColor.Black);
                     return;
                 default:
                     ShowWrongCommandMessage(WrongCommandReason.CommandNotFound);
@@ -180,11 +180,11 @@ namespace Quoridor.MVC
             Start();
         }
 
-        void CreatePlayerVsBotGame(PlayerColor color)
+        void CreatePlayerVsBotGame(PawnColor color)
         {
-            var game = new PlayerVsBotGameCreator {PlayerColor = color};
+            var game = new PlayerVsBotGameCreator();
 
-            currentGameEngine = game.Create();
+            currentGameEngine = game.Create(color);
             currentGameEngine.GameEnded += GameEnded;
             currentGameEngine.Start();
         }
