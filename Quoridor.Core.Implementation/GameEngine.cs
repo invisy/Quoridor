@@ -52,12 +52,15 @@ namespace Quoridor.Core.Implementation
             int center = _board.Tiles.GetLength(0) / 2;
             int max = _board.Tiles.GetLength(0) - 1;
 
-            if(player1.Color == PawnColor.Black && player2.Color == PawnColor.White)
-            {
-                IPawn tmp = player1;
-                player1 = player2;
-                player2 = tmp;
-            }
+            _board.TrySetPawn(player1, new Point(center, 0));
+            _winPoints.Add(player1, GenerateWinPoints(new Point(0, max), new Point(max, max)));
+            _playerPawns.AddLast(player1);
+            _board.TrySetPawn(player2, new Point(center, _board.Tiles.GetLength(0) - 1));
+            _winPoints.Add(player2, GenerateWinPoints(new Point(0, 0), new Point(max, 0)));
+            _playerPawns.AddLast(player2);
+
+            _currentPlayer = _playerPawns.First;
+        }
 
             _board.TrySetPawn(player1, new Point(center, _board.Tiles.GetLength(0) - 1));
             _winPoints.Add(player1, GenerateWinPoints(new Point(0, 0), new Point(max, 0)));

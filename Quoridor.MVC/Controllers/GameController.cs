@@ -7,7 +7,9 @@ using Quoridor.MVC.Utilites;
 using Quoridor.MVC.Views;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Threading;
 
 namespace Quoridor.MVC
 {
@@ -94,10 +96,10 @@ namespace Quoridor.MVC
             switch (menuCommand)
             {
                 case "white":
-                    CreatePlayerVsBotGame(PawnColor.White);
+                    CreatePlayerVsBotGame(PlayerColor.White);
                     return;
                 case "black":
-                    CreatePlayerVsBotGame(PawnColor.Black);
+                    CreatePlayerVsBotGame(PlayerColor.Black);
                     return;
                 default:
                     ShowWrongCommandMessage(WrongCommandReason.CommandNotFound);
@@ -176,15 +178,17 @@ namespace Quoridor.MVC
             winnerView.DrawWinner(winner.Name);
 
             Console.ReadKey();
-
             Start();
         }
 
-        void CreatePlayerVsBotGame(PawnColor color)
+        void CreatePlayerVsBotGame(PlayerColor color)
         {
-            var game = new PlayerVsBotGameCreator();
+            var game = new PlayerVsBotGameCreator {PlayerColor = color};
 
-            currentGameEngine = game.Create(color);
+        void CreatePlayerVsBotGame()
+        {
+            IGameCreator game = new PlayerVsBotGameCreator();
+            currentGameEngine = game.Create();
             currentGameEngine.GameEnded += GameEnded;
             currentGameEngine.Start();
         }
