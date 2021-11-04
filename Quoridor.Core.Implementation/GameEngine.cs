@@ -65,7 +65,7 @@ namespace Quoridor.Core.Implementation
             _winPoints.Add(player2, GenerateWinPoints(new Point(0, 0), new Point(max, 0)));
             _playerPawns.AddLast(player2);
 
-            _currentPlayer = _playerPawns.First;
+            _currentPlayer = _playerPawns.Last;
         }
 
         private void InitializeFourPlayers(IPawn player1, IPawn player2, IPawn player3, IPawn player4)
