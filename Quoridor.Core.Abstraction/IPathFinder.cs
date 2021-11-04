@@ -5,6 +5,7 @@ namespace Quoridor.Core.Abstraction
 {
     public interface IPathFinder
     {
-        bool PathExistsToAny(Point point, List<Point> points);
+        bool PathExistsToAny(IReadableBoard board, Point point, List<Point> points);
+        int MinimalPathLengthToAny(IReadableBoard board, Point point, List<Point> points);
     }
 }

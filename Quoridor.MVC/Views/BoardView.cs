@@ -10,6 +10,7 @@ namespace Quoridor.MVC.Views
     {
         static char _tile = '.';
         static char _player = 'x';
+        static char _player2 = 'y';
         static char _fenceHorizontal = '—';
         static char _fenceVertical = '|';
         static char _passage = '░';
@@ -51,7 +52,7 @@ namespace Quoridor.MVC.Views
                     {
                         int absoluteX = x.AdaptForFence();
                         int absoluteY = y.AdaptForFence();
-                        if (board.FenceCrossroads[x, y].Direction == FenceDirection.HORIZONTAL)
+                        if (board.FenceCrossroads[x, y].Direction == FenceDirection.Horizontal)
                         {
                             PutHorizontalFence(absoluteX, absoluteY);
                         }
@@ -90,7 +91,10 @@ namespace Quoridor.MVC.Views
             {
                 if (el is Pawn)
                 {
-                    _blankBoard[el.Position.X.AdaptForTile(), el.Position.Y.AdaptForTile()] = _player;
+                    if(el.Color == PawnColor.White)
+                        _blankBoard[el.Position.X.AdaptForTile(), el.Position.Y.AdaptForTile()] = _player;
+                    else
+                        _blankBoard[el.Position.X.AdaptForTile(), el.Position.Y.AdaptForTile()] = _player2;
                 }
             }
         }

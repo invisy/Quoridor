@@ -4,19 +4,36 @@ using System.Collections.Generic;
 
 namespace Quoridor.Core.Implementation
 {
-    public class StepValidator : IStepValidator
+    public class StepsProvider : IStepsProvider
     {
         private int _boardSideLength = 0;
-        private IReadablePawn[,] _tiles;
-        private Fence[,] _fences;
+        IReadableBoard? _board;
 
         public List<Point> GetPossibleSteps(IReadableBoard board, Point startPoint)
         {
             List<Point> points = new List<Point>();
 
             _boardSideLength = board.Tiles.GetLength(0);
-            _tiles = board.Tiles;
-            _fences = board.FenceCrossroads;
+            _board = board;
+
+            if (PassageUpExists(startPoint))
+                points.Add(startPoint + (0, -1));
+            if (PassageDownExists(startPoint))
+                points.Add(startPoint + (0, 1));
+            if (PassageLeftExists(startPoint))
+                points.Add(startPoint + (-1, 0));
+            if (PassageRightExists(startPoint))
+                points.Add(startPoint + (1, 0));
+
+            return points;
+        }
+
+        public List<Point> GetPossibleJumps(IReadableBoard board, Point startPoint)
+        {
+            List<Point> points = new List<Point>();
+
+            _boardSideLength = board.Tiles.GetLength(0);
+            _board = board;
 
             points.AddRange(GetPossibleUpSteps(startPoint));
             points.AddRange(GetPossibleDownSteps(startPoint));
@@ -32,23 +49,21 @@ namespace Quoridor.Core.Implementation
 
             if (PassageUpExists(point))
             {
-                if (_tiles[point.X, point.Y - 1] == null)
-                    points.Add(new Point(point.X, point.Y - 1));
-                else
+                if (_board.Tiles[point.X, point.Y - 1] != null)
                 {
                     Point jumpOverPlayer = new Point(point.X, point.Y - 1);
 
-                    if (PassageUpExists(jumpOverPlayer) && (_tiles[jumpOverPlayer.X, jumpOverPlayer.Y - 1] == null))
+                    if (PassageUpExists(jumpOverPlayer) && (_board.Tiles[jumpOverPlayer.X, jumpOverPlayer.Y - 1] == null))
                     {
                         points.Add(new Point(jumpOverPlayer.X, jumpOverPlayer.Y - 1));
                     }
                     else
                     {
-                        if (PassageLeftExists(jumpOverPlayer) && _tiles[jumpOverPlayer.X - 1, jumpOverPlayer.Y] == null)
+                        if (PassageLeftExists(jumpOverPlayer) && _board.Tiles[jumpOverPlayer.X - 1, jumpOverPlayer.Y] == null)
                         {
                             points.Add(new Point(jumpOverPlayer.X - 1, jumpOverPlayer.Y));
                         }
-                        if (PassageRightExists(jumpOverPlayer) && _tiles[jumpOverPlayer.X + 1, jumpOverPlayer.Y] == null)
+                        if (PassageRightExists(jumpOverPlayer) && _board.Tiles[jumpOverPlayer.X + 1, jumpOverPlayer.Y] == null)
                         {
                             points.Add(new Point(jumpOverPlayer.X + 1, jumpOverPlayer.Y));
                         }
@@ -65,22 +80,20 @@ namespace Quoridor.Core.Implementation
 
             if (PassageDownExists(point))
             {
-                if (_tiles[point.X, point.Y + 1] == null)
-                    points.Add(new Point(point.X, point.Y + 1));
-                else
+                if (_board.Tiles[point.X, point.Y + 1] != null)
                 {
                     Point jumpOverPlayer = new Point(point.X, point.Y + 1);
-                    if (PassageDownExists(jumpOverPlayer) && _tiles[jumpOverPlayer.X, jumpOverPlayer.Y + 1] == null)
+                    if (PassageDownExists(jumpOverPlayer) && _board.Tiles[jumpOverPlayer.X, jumpOverPlayer.Y + 1] == null)
                     {
                         points.Add(new Point(jumpOverPlayer.X, jumpOverPlayer.Y + 1));
                     }
                     else
                     {
-                        if (PassageLeftExists(jumpOverPlayer) && _tiles[jumpOverPlayer.X - 1, jumpOverPlayer.Y] == null)
+                        if (PassageLeftExists(jumpOverPlayer) && _board.Tiles[jumpOverPlayer.X - 1, jumpOverPlayer.Y] == null)
                         {
                             points.Add(new Point(jumpOverPlayer.X - 1, jumpOverPlayer.Y));
                         }
-                        if (PassageRightExists(jumpOverPlayer) && _tiles[jumpOverPlayer.X + 1, jumpOverPlayer.Y] == null)
+                        if (PassageRightExists(jumpOverPlayer) && _board.Tiles[jumpOverPlayer.X + 1, jumpOverPlayer.Y] == null)
                         {
                             points.Add(new Point(jumpOverPlayer.X + 1, jumpOverPlayer.Y));
                         }
@@ -97,22 +110,20 @@ namespace Quoridor.Core.Implementation
 
             if (PassageLeftExists(point))
             {
-                if (_tiles[point.X - 1, point.Y] == null)
-                    points.Add(new Point(point.X - 1, point.Y));
-                else
+                if (_board.Tiles[point.X - 1, point.Y] != null)
                 {
                     Point jumpOverPlayer = new Point(point.X - 1, point.Y);
-                    if (PassageLeftExists(jumpOverPlayer) && _tiles[jumpOverPlayer.X - 1, jumpOverPlayer.Y] == null)
+                    if (PassageLeftExists(jumpOverPlayer) && _board.Tiles[jumpOverPlayer.X - 1, jumpOverPlayer.Y] == null)
                     {
                         points.Add(new Point(jumpOverPlayer.X - 1, jumpOverPlayer.Y));
                     }
                     else
                     {
-                        if (PassageUpExists(jumpOverPlayer) && _tiles[jumpOverPlayer.X, jumpOverPlayer.Y - 1] == null)
+                        if (PassageUpExists(jumpOverPlayer) && _board.Tiles[jumpOverPlayer.X, jumpOverPlayer.Y - 1] == null)
                         {
                             points.Add(new Point(jumpOverPlayer.X, jumpOverPlayer.Y - 1));
                         }
-                        if (PassageDownExists(jumpOverPlayer) && _tiles[jumpOverPlayer.X, jumpOverPlayer.Y + 1] == null)
+                        if (PassageDownExists(jumpOverPlayer) && _board.Tiles[jumpOverPlayer.X, jumpOverPlayer.Y + 1] == null)
                         {
                             points.Add(new Point(jumpOverPlayer.X, jumpOverPlayer.Y + 1));
                         }
@@ -129,22 +140,20 @@ namespace Quoridor.Core.Implementation
 
             if (PassageRightExists(point))
             {
-                if (_tiles[point.X + 1, point.Y] == null)
-                    points.Add(new Point(point.X + 1, point.Y));
-                else
+                if (_board.Tiles[point.X + 1, point.Y] != null)
                 {
                     Point jumpOverPlayer = new Point(point.X + 1, point.Y);
-                    if (PassageRightExists(jumpOverPlayer) && _tiles[jumpOverPlayer.X + 1, jumpOverPlayer.Y] == null)
+                    if (PassageRightExists(jumpOverPlayer) && _board.Tiles[jumpOverPlayer.X + 1, jumpOverPlayer.Y] == null)
                     {
                         points.Add(new Point(jumpOverPlayer.X + 1, jumpOverPlayer.Y));
                     }
                     else
                     {
-                        if (PassageUpExists(jumpOverPlayer) && _tiles[jumpOverPlayer.X, jumpOverPlayer.Y - 1] == null)
+                        if (PassageUpExists(jumpOverPlayer) && _board.Tiles[jumpOverPlayer.X, jumpOverPlayer.Y - 1] == null)
                         {
                             points.Add(new Point(jumpOverPlayer.X, jumpOverPlayer.Y - 1));
                         }
-                        if (PassageDownExists(jumpOverPlayer) && _tiles[jumpOverPlayer.X, jumpOverPlayer.Y + 1] == null)
+                        if (PassageDownExists(jumpOverPlayer) && _board.Tiles[jumpOverPlayer.X, jumpOverPlayer.Y + 1] == null)
                         {
                             points.Add(new Point(jumpOverPlayer.X, jumpOverPlayer.Y + 1));
                         }
@@ -159,11 +168,11 @@ namespace Quoridor.Core.Implementation
         {
             if(!PlayerIsOnTopSide(playerCoordinate))
             {
-                Fence? leftFence = !PlayerIsOnLeftSide(playerCoordinate) ? _fences[playerCoordinate.X - 1, playerCoordinate.Y - 1] : default;
-                Fence? rightFence = !PlayerIsOnRightSide(playerCoordinate) ? _fences[playerCoordinate.X, playerCoordinate.Y - 1] : default;
+                Fence? leftFence = !PlayerIsOnLeftSide(playerCoordinate) ? _board.FenceCrossroads[playerCoordinate.X - 1, playerCoordinate.Y - 1] : default;
+                Fence? rightFence = !PlayerIsOnRightSide(playerCoordinate) ? _board.FenceCrossroads[playerCoordinate.X, playerCoordinate.Y - 1] : default;
 
-                bool blockedByLeftFence = (leftFence?.Direction == FenceDirection.HORIZONTAL);
-                bool blockedByRightFence = (rightFence?.Direction == FenceDirection.HORIZONTAL);
+                bool blockedByLeftFence = (leftFence?.Direction == FenceDirection.Horizontal);
+                bool blockedByRightFence = (rightFence?.Direction == FenceDirection.Horizontal);
 
                 return !blockedByLeftFence && !blockedByRightFence;
             }
@@ -174,11 +183,11 @@ namespace Quoridor.Core.Implementation
         {
             if(!PlayerIsOnBottomSide(playerCoordinate))
             {
-                Fence? leftFence = !PlayerIsOnLeftSide(playerCoordinate) ? _fences[playerCoordinate.X - 1, playerCoordinate.Y] : default;
-                Fence? rightFence = !PlayerIsOnRightSide(playerCoordinate) ? _fences[playerCoordinate.X, playerCoordinate.Y] : default;
+                Fence? leftFence = !PlayerIsOnLeftSide(playerCoordinate) ? _board.FenceCrossroads[playerCoordinate.X - 1, playerCoordinate.Y] : default;
+                Fence? rightFence = !PlayerIsOnRightSide(playerCoordinate) ? _board.FenceCrossroads[playerCoordinate.X, playerCoordinate.Y] : default;
 
-                bool blockedByLeftFence = (leftFence?.Direction == FenceDirection.HORIZONTAL);
-                bool blockedByRightFence = (rightFence?.Direction == FenceDirection.HORIZONTAL);
+                bool blockedByLeftFence = (leftFence?.Direction == FenceDirection.Horizontal);
+                bool blockedByRightFence = (rightFence?.Direction == FenceDirection.Horizontal);
 
                 return !blockedByLeftFence && !blockedByRightFence;
             }
@@ -189,11 +198,11 @@ namespace Quoridor.Core.Implementation
         {
             if(!PlayerIsOnLeftSide(playerCoordinate))
             {
-                Fence? upperFence = !PlayerIsOnTopSide(playerCoordinate) ? _fences[playerCoordinate.X - 1, playerCoordinate.Y - 1] : default;
-                Fence? lowerFence = !PlayerIsOnBottomSide(playerCoordinate) ? _fences[playerCoordinate.X - 1, playerCoordinate.Y] : default;
+                Fence? upperFence = !PlayerIsOnTopSide(playerCoordinate) ? _board.FenceCrossroads[playerCoordinate.X - 1, playerCoordinate.Y - 1] : default;
+                Fence? lowerFence = !PlayerIsOnBottomSide(playerCoordinate) ? _board.FenceCrossroads[playerCoordinate.X - 1, playerCoordinate.Y] : default;
 
-                bool blockedByUpperFence = (upperFence?.Direction == FenceDirection.VERTICAL);
-                bool blockedByLowerFence = (lowerFence?.Direction == FenceDirection.VERTICAL);
+                bool blockedByUpperFence = (upperFence?.Direction == FenceDirection.Vertical);
+                bool blockedByLowerFence = (lowerFence?.Direction == FenceDirection.Vertical);
 
                 return !blockedByUpperFence && !blockedByLowerFence;
             }
@@ -204,11 +213,11 @@ namespace Quoridor.Core.Implementation
         {
             if(!PlayerIsOnRightSide(playerCoordinate))
             {
-                Fence? upperFence = !PlayerIsOnTopSide(playerCoordinate) ? _fences[playerCoordinate.X, playerCoordinate.Y - 1] : default;
-                Fence? lowerFence = !PlayerIsOnBottomSide(playerCoordinate) ? _fences[playerCoordinate.X, playerCoordinate.Y] : default;
+                Fence? upperFence = !PlayerIsOnTopSide(playerCoordinate) ? _board.FenceCrossroads[playerCoordinate.X, playerCoordinate.Y - 1] : default;
+                Fence? lowerFence = !PlayerIsOnBottomSide(playerCoordinate) ? _board.FenceCrossroads[playerCoordinate.X, playerCoordinate.Y] : default;
 
-                bool blockedByUpperFence = (upperFence?.Direction == FenceDirection.VERTICAL);
-                bool blockedByLowerFence = (lowerFence?.Direction == FenceDirection.VERTICAL);
+                bool blockedByUpperFence = (upperFence?.Direction == FenceDirection.Vertical);
+                bool blockedByLowerFence = (lowerFence?.Direction == FenceDirection.Vertical);
 
                 return !blockedByUpperFence && !blockedByLowerFence;
             }

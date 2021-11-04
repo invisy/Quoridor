@@ -1,4 +1,6 @@
-﻿namespace Quoridor.Core.Abstraction
+﻿using Quoridor.Core.Abstraction.Common;
+
+namespace Quoridor.Core.Abstraction
 {
     public enum PlayerColor
     {
@@ -8,6 +10,6 @@
 
     public interface IGameCreator
     {
-        IGameEngine Create();
+        IGameEngine Create(PawnColor firstPlayerColor = PawnColor.White);
     }
 }

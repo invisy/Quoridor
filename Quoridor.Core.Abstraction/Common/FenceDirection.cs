@@ -2,7 +2,7 @@
 {
     public enum FenceDirection
     {
-        HORIZONTAL,
-        VERTICAL
+        Horizontal,
+        Vertical
     }
 }

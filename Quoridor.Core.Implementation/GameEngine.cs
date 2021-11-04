@@ -16,31 +16,25 @@ namespace Quoridor.Core.Implementation
         private LinkedListNode<IPawn> _currentPlayer;
 
         private IPathFinder _pathFinder;
-        private IStepValidator _stepValidator;
+        private IStepsProvider _stepsProvider;
 
         public event Action? GameStarted;
         public event Action? BoardUpdated;
         public event Action? GameEnded;
 
-        public IReadableBoard Board => _board;
+        public IReadableBoard Board => (IReadableBoard)_board.Clone();
         public IReadablePawn CurrentPlayer => _currentPlayer.Value;
         public IReadOnlyList<IReadablePawn> AllPlayers => _playerPawns.ToList<IReadablePawn>().AsReadOnly();
         public IReadablePawn? Winner => _winner;
 
-        public GameEngine(IBoard board, IPathFinder pathFinder, IStepValidator stepValidator, IPawn player1, IPawn player2)
-        {
-            _board = board;
-            _pathFinder = pathFinder;
-            _stepValidator = stepValidator;
-            InitializeTwoPlayers(player1, player2);
-        }
+        public Stack<Move> MoveHistory { get; } = new Stack<Move>();
 
-        public GameEngine(IBoard board, IPathFinder pathFinder, IStepValidator stepValidator, IPawn player1, IPawn player2, IPawn player3, IPawn player4)
+        public GameEngine(IBoard board, IPathFinder pathFinder, IStepsProvider stepsProvider, IPawn player1, IPawn player2)
         {
             _board = board;
             _pathFinder = pathFinder;
-            _stepValidator = stepValidator;
-            InitializeFourPlayers(player1, player2, player3, player4);
+            _stepsProvider = stepsProvider;
+            InitializeTwoPlayers(player1, player2);
         }
 
         public void Start()
@@ -58,36 +52,19 @@ namespace Quoridor.Core.Implementation
             int center = _board.Tiles.GetLength(0) / 2;
             int max = _board.Tiles.GetLength(0) - 1;
 
-            _board.TrySetPawn(player1, new Point(center, 0));
-            _winPoints.Add(player1, GenerateWinPoints(new Point(0, max), new Point(max, max)));
+            if(player1.Color == PawnColor.Black && player2.Color == PawnColor.White)
+            {
+                IPawn tmp = player1;
+                player1 = player2;
+                player2 = tmp;
+            }
+
+            _board.TrySetPawn(player1, new Point(center, _board.Tiles.GetLength(0) - 1));
+            _winPoints.Add(player1, GenerateWinPoints(new Point(0, 0), new Point(max, 0)));
             _playerPawns.AddLast(player1);
-            _board.TrySetPawn(player2, new Point(center, _board.Tiles.GetLength(0) - 1));
-            _winPoints.Add(player2, GenerateWinPoints(new Point(0, 0), new Point(max, 0)));
+            _board.TrySetPawn(player2, new Point(center, 0));
+            _winPoints.Add(player2, GenerateWinPoints(new Point(0, max), new Point(max, max)));
             _playerPawns.AddLast(player2);
-
-            _currentPlayer = _playerPawns.Last;
-        }
-
-        private void InitializeFourPlayers(IPawn player1, IPawn player2, IPawn player3, IPawn player4)
-        {
-            int center = _board.Tiles.GetLength(0) / 2;
-            int max = _board.Tiles.GetLength(0) - 1;
-
-            _board.TrySetPawn(player1, new Point(center, 0));
-            _winPoints.Add(player1, GenerateWinPoints(new Point(0, max), new Point(max, max)));
-            _playerPawns.AddLast(player1);
-
-            _board.TrySetPawn(player2, new Point(max, center));
-            _winPoints.Add(player2, GenerateWinPoints(new Point(0, 0), new Point(0, max)));
-            _playerPawns.AddLast(player2);
-
-            _board.TrySetPawn(player3, new Point(center, _board.Tiles.GetLength(0) - 1));
-            _winPoints.Add(player3, GenerateWinPoints(new Point(0, 0), new Point(max, 0)));
-            _playerPawns.AddLast(player3);
-
-            _board.TrySetPawn(player4, new Point(0, center));
-            _winPoints.Add(player4, GenerateWinPoints(new Point(max, 0), new Point(max, max)));
-            _playerPawns.AddLast(player4);
 
             _currentPlayer = _playerPawns.First;
         }
@@ -97,7 +74,7 @@ namespace Quoridor.Core.Implementation
             _currentPlayer = _currentPlayer.Next ?? _playerPawns.First;
             BoardUpdated?.Invoke();
 
-            if (_currentPlayer.Value is IBotPawn)
+            if (_winner == null && _currentPlayer.Value is IBotPawn)
             {
                 IBotPawn bot = (IBotPawn)_currentPlayer.Value;
                 bot.Run(this);
@@ -105,33 +82,38 @@ namespace Quoridor.Core.Implementation
             }
         }
 
-        public bool TryMovePawn(Point position)
+        public bool TryMovePawn(Point position, bool isJump)
         {
             if (_winner != null)
                 return false;
 
             Point oldPosition = _currentPlayer.Value.Position;
-            if (_stepValidator.GetPossibleSteps(_board, _currentPlayer.Value.Position).Find(x => x.Equals(position)) != null)
+            bool moveIsPossible = false;
+            if (isJump)
+                moveIsPossible = _stepsProvider.GetPossibleJumps(Board, _currentPlayer.Value.Position).Where(x => x.Equals(position)).Cast<Point?>().FirstOrDefault() != null;
+            else
+                moveIsPossible = _stepsProvider.GetPossibleSteps(Board, _currentPlayer.Value.Position).Where(x => x.Equals(position)).Cast<Point?>().FirstOrDefault() != null;
+
+            if (moveIsPossible)
             {
                 if (_board.TrySetPawn(_currentPlayer.Value, position))
                 {
                     foreach (IPawn pawn in _playerPawns)
                     {
-                        if (!_pathFinder.PathExistsToAny(pawn.Position, _winPoints[pawn]))
+                        if (!_pathFinder.PathExistsToAny(Board, pawn.Position, _winPoints[pawn]))
                         {
                             _board.TrySetPawn(_currentPlayer.Value, oldPosition);
                             return false;
                         }
                     }
 
-                    if (_winPoints[_currentPlayer.Value].Find(x => x.Equals(position)) != null)
+                    if (_winPoints[_currentPlayer.Value].Where(x => x.Equals(position)).Cast<Point?>().FirstOrDefault() != null)
                     {
                         _winner = _currentPlayer.Value;
                         GameEnded?.Invoke();
                     }
-
                     SwitchPlayer();
-
+                    MoveHistory.Push(new Move(position, _currentPlayer.Value.Color, isJump));
                     return true;
                 }
             }
@@ -151,7 +133,7 @@ namespace Quoridor.Core.Implementation
             {
                 foreach (IPawn pawn in _playerPawns)
                 {
-                    if (!_pathFinder.PathExistsToAny(pawn.Position, _winPoints[pawn]))
+                    if (!_pathFinder.PathExistsToAny(Board, pawn.Position, _winPoints[pawn]))
                     {
                         _board.RemoveFenceIfExists(position);
                         return false;
@@ -160,7 +142,7 @@ namespace Quoridor.Core.Implementation
 
                 _currentPlayer.Value.TryTakeFence();
                 SwitchPlayer();
-
+                MoveHistory.Push(new Move(position, direction, _currentPlayer.Value.Color));
                 return true;
             }
 
