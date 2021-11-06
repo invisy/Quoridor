@@ -8,6 +8,8 @@ namespace Quoridor.Core.Implementation
 {
     public class MiniMaxBotPawn : Pawn, IBotPawn
     {
+        private const int DEPTH = 2;
+
         private IGameEngine _engine;
         private IPathFinder _pathFinder;
         private IStepsProvider _stepsProvider;
@@ -26,30 +28,27 @@ namespace Quoridor.Core.Implementation
             IBoard board = (IBoard)gameEngine.Board;
 
             IReadOnlyList<IReadablePawn> pawns = gameEngine.AllPlayers;
-            _enemy = FindEnemy(pawns) as IPawn ;
+            _enemy = FindEnemy(pawns) as IPawn;
 
             int bestResult = int.MinValue;
             Move bestMove = null;
 
             IEnumerable<Move> allMoves = GetAllMoves(board, this);
 
-            foreach(Move move in allMoves)
+            foreach (Move move in allMoves)
             {
                 (int, Action) moveSimulation = SimulateMoveExecution(board, move);
                 Action cancelMove = moveSimulation.Item2;
 
-                if (moveSimulation.Item1 <= bestResult)
+                if (moveSimulation.Item1 != int.MinValue)
                 {
-                    cancelMove();
-                    continue;
-                }
-                
-                int result = -MiniMax(board, 2, _enemy , -moveSimulation.Item1);
+                    int result = MiniMax(board, DEPTH - 1, _enemy, -moveSimulation.Item1);
 
-                if (result > bestResult)
-                {
-                    bestResult = result;
-                    bestMove = move;
+                    if (result > bestResult)
+                    {
+                        bestResult = result;
+                        bestMove = move;
+                    }
                 }
 
                 cancelMove();
@@ -74,16 +73,12 @@ namespace Quoridor.Core.Implementation
 
                 if (moveSimulation.Item1 != int.MinValue)
                 {
-                    if (moveSimulation.Item1 <= bestResult)
-                    {
-                        cancelMove();
-                        continue;
-                    }
-                    int result = -MiniMax(board, depth - 1, currentEnemyPlayer, -moveSimulation.Item1);
+                    int result = MiniMax(board, depth - 1, currentEnemyPlayer, -moveSimulation.Item1);
+
                     if (result > bestResult)
                         bestResult = result;
-
                 }
+
                 cancelMove();
             }
 
