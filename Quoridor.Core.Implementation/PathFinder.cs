@@ -38,29 +38,31 @@ namespace Quoridor.Core.Implementation
             //A*
         public int MinimalPathLengthToAny(IReadableBoard board, Point point, List<Point> winPoints)
         {
-            List<Node<Point>> visited = new List<Node<Point>>();
+            HashSet<Point> allPoints = new HashSet<Point>();
             FastPriorityQueue<Node<Point>> unvisited = new FastPriorityQueue<Node<Point>>(board.Tiles.Length); //PriorityQueue in .NET 6
 
+            allPoints.Add(point);
             unvisited.Enqueue(new Node<Point>(point, 0), 0);
 
             while (unvisited.Count > 0)
             {
                 Node<Point> currentPoint = unvisited.Dequeue();
+
                 if (winPoints.Where(x => x.Equals(currentPoint.Value)).Cast<Point?>().FirstOrDefault() != null)
                     return currentPoint.PathLength;
 
-                visited.Add(currentPoint);
 
                 List<Point> newPoints = _stepsProvider.GetPossibleSteps(board, currentPoint.Value);
                 newPoints.AddRange(_stepsProvider.GetPossibleJumps(board, currentPoint.Value));
 
                 foreach (Point newPoint in newPoints)
                 {
-                    if (visited.Where(x => x.Value.Equals(newPoint)).FirstOrDefault() == null &&
-                        unvisited.Where(x => x.Value.Equals(newPoint)).FirstOrDefault() == null)
+                    if (!allPoints.Contains(newPoint))
                     {
                         int PathLength = currentPoint.PathLength + 1;
                         int priority = PathLength + Heuristic(newPoint, winPoints);
+
+                        allPoints.Add(newPoint);
                         unvisited.Enqueue(new Node<Point>(newPoint, PathLength), priority);
                     }
                 }
