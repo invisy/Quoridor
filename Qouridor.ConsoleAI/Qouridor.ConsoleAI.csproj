@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Quoridor.Core.Abstraction\Quoridor.Core.Abstraction.csproj" />
+    <ProjectReference Include="..\Quoridor.Core.Implementation\Quoridor.Core.Implementation.csproj" />
+  </ItemGroup>
+
+</Project>
