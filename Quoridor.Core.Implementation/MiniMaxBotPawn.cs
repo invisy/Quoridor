@@ -27,7 +27,7 @@ namespace Quoridor.Core.Implementation
             IReadablePawn currentPlayer = gameEngine.CurrentPlayer;
             IBoard board = (IBoard)gameEngine.Board;
 
-            IReadOnlyList<IReadablePawn> pawns = gameEngine.AllPlayers;
+            IEnumerable<IReadablePawn> pawns = gameEngine.Board.GetPawns();
             _enemy = FindEnemy(pawns) as IPawn;
 
             int bestResult = int.MinValue;
@@ -42,7 +42,7 @@ namespace Quoridor.Core.Implementation
 
                 if (moveSimulation.Item1 != int.MinValue)
                 {
-                    int result = MiniMax(board, DEPTH - 1, _enemy, -moveSimulation.Item1);
+                    int result = MiniMax(board, DEPTH - 1, _enemy, MiniMaxEvaluation(-moveSimulation.Item1, _enemy));
 
                     if (result > bestResult)
                     {
@@ -73,7 +73,7 @@ namespace Quoridor.Core.Implementation
 
                 if (moveSimulation.Item1 != int.MinValue)
                 {
-                    int result = MiniMax(board, depth - 1, currentEnemyPlayer, -moveSimulation.Item1);
+                    int result = MiniMax(board, depth - 1, currentEnemyPlayer, MiniMaxEvaluation(-moveSimulation.Item1, currentEnemyPlayer));
 
                     if (result > bestResult)
                         bestResult = result;
@@ -83,6 +83,11 @@ namespace Quoridor.Core.Implementation
             }
 
             return bestResult;
+        }
+
+        private int MiniMaxEvaluation(int pathDifference, IReadablePawn pawn)
+        {
+            return pathDifference;
         }
 
         private (int,Action) SimulateMoveExecution(IBoard board, Move move)
@@ -97,12 +102,12 @@ namespace Quoridor.Core.Implementation
             {
                 Point oldPosition = board.GetPawnPosition(currentPlayer);
                 board.TrySetPawn(currentPlayer, move.PlayerPosition);
-                
-                int myDistance = _pathFinder.MinimalPathLengthToAny(board, board.GetPawnPosition(currentPlayer), _engine.GetWinPointsForPlayer(currentPlayer).ToList());
-                int enemyDistance = _pathFinder.MinimalPathLengthToAny(board, board.GetPawnPosition(currentEnemyPlayer), _engine.GetWinPointsForPlayer(currentEnemyPlayer).ToList());
 
-                if (myDistance != -1 && enemyDistance != -1)
-                    evaluation = enemyDistance - myDistance;
+                PathFinderResult myDistance = _pathFinder.PathExistsToAnyWinPoint(board, currentPlayer);
+                PathFinderResult enemyDistance = _pathFinder.PathExistsToAnyWinPoint(board, currentEnemyPlayer);
+
+                if (myDistance.PathExists && enemyDistance.PathExists)
+                    evaluation = enemyDistance.PathLength - myDistance.PathLength;
                 else
                     evaluation = int.MinValue;  // this move will be never called
                 cancellationFunction = () => board.TrySetPawn(currentPlayer, oldPosition);
@@ -111,11 +116,11 @@ namespace Quoridor.Core.Implementation
             {
                 board.TryPutFence(move.FencePosition, move.FenceDirection);
 
-                int myDistance = _pathFinder.MinimalPathLengthToAny(board, board.GetPawnPosition(currentPlayer), _engine.GetWinPointsForPlayer(currentPlayer).ToList());
-                int enemyDistance = _pathFinder.MinimalPathLengthToAny(board, board.GetPawnPosition(currentEnemyPlayer), _engine.GetWinPointsForPlayer(currentEnemyPlayer).ToList());
+                PathFinderResult myDistance = _pathFinder.PathExistsToAnyWinPoint(board, currentPlayer);
+                PathFinderResult enemyDistance = _pathFinder.PathExistsToAnyWinPoint(board, currentEnemyPlayer);
 
-                if (myDistance != -1 && enemyDistance != -1)
-                    evaluation = enemyDistance - myDistance;
+                if (myDistance.PathExists && enemyDistance.PathExists)
+                    evaluation = enemyDistance.PathLength - myDistance.PathLength;
                 else
                     evaluation = int.MinValue;  // this move will be never called
                 cancellationFunction = () => board.RemoveFenceIfExists(move.FencePosition);
@@ -184,14 +189,15 @@ namespace Quoridor.Core.Implementation
             return points;
         }
 
-        private IReadablePawn FindEnemy(IReadOnlyList<IReadablePawn> players)
+        private IReadablePawn FindEnemy(IEnumerable<IReadablePawn> players)
         {
-            if (players.Count == 2)
+            List<IReadablePawn> playersList = players.ToList();
+            if (playersList.Count == 2)
             {
-                if (players[0] == this)
-                    return players[1];
+                if (playersList[0] == this)
+                    return playersList[1];
                 else
-                    return players[0];
+                    return playersList[0];
             }
             else
                 throw new ArgumentException("Now AI works only with 2 players!");

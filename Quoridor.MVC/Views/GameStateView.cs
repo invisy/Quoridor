@@ -6,7 +6,7 @@ namespace Quoridor.MVC.Views
 {
     class GameStateView
     {
-        public void DrawState(IReadOnlyList<IReadablePawn> pawnList, IReadablePawn currentPlayer)
+        public void DrawState(IEnumerable<IReadablePawn> pawnList, IReadablePawn currentPlayer)
         {
             string state = "";
 

@@ -8,21 +8,28 @@ namespace Quoridor.Core.Implementation
     public class Board : IBoard
     {
         private readonly Dictionary<IReadablePawn, Point> _pawnPositions = new(); // cache players positions
+        private readonly Dictionary<IReadablePawn, List<Point>> _winPoints = new();
         private readonly IPawn?[,] _tiles;
         private readonly Fence?[,] _fenceCrossroads;
 
         public IReadablePawn[,] Tiles => _tiles;
         public Fence[,] FenceCrossroads => _fenceCrossroads;
 
-        public Board(int sideSize)
+        public Board(int sideSize, IPawn player1, IPawn player2)
         {
             if (sideSize % 2 == 1 && sideSize > 1)
             {
                 _tiles = new IPawn[sideSize, sideSize];
                 _fenceCrossroads = new Fence[sideSize - 1, sideSize - 1];
+                InitializeTwoPlayers(player1, player2);
             }
             else
                 throw new ArgumentOutOfRangeException("Only odd positive value (except 1) is allowed!");
+        }
+
+        public IEnumerable<IReadablePawn> GetPawns()
+        {
+            return _pawnPositions.Keys;
         }
 
         public Point GetPawnPosition(IReadablePawn pawn)
@@ -68,6 +75,42 @@ namespace Quoridor.Core.Implementation
 
             return false;
         }
+
+        public IEnumerable<Point> GetWinPointsForPlayer(IReadablePawn pawn)
+        {
+            return _winPoints[pawn];
+        }
+
+        private void InitializeTwoPlayers(IPawn player1, IPawn player2)
+        {
+            int center = _tiles.GetLength(0) / 2;
+            int max = _tiles.GetLength(0) - 1;
+
+            if (player1.Color == PawnColor.Black && player2.Color == PawnColor.White)
+            {
+                IPawn tmp = player1;
+                player1 = player2;
+                player2 = tmp;
+            }
+
+            TrySetPawn(player1, new Point(center, _tiles.GetLength(0) - 1));
+            _winPoints.Add(player1, GenerateWinPoints(new Point(0, 0), new Point(max, 0)));
+            TrySetPawn(player2, new Point(center, 0));
+            _winPoints.Add(player2, GenerateWinPoints(new Point(0, max), new Point(max, max)));
+        }
+
+        private List<Point> GenerateWinPoints(Point start, Point end)
+        {
+            List<Point> result = new List<Point>();
+            if (start.X == end.X)
+                for (int i = start.Y; i <= end.Y; i++)
+                    result.Add(new Point(start.X, i));
+            else if (start.Y == end.Y)
+                for (int i = start.X; i <= end.X; i++)
+                    result.Add(new Point(i, start.Y));
+            return result;
+        }
+
         public void RemoveFenceIfExists(Point coordinate)
         {
             if (!PointIsOutOfFenceCrossroads(coordinate))

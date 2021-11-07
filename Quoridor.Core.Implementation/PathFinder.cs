@@ -28,19 +28,14 @@ namespace Quoridor.Core.Implementation
             _stepsProvider = stepsProvider;
         }
 
-        public bool PathExistsToAny(IReadableBoard board, Point point, List<Point> winPoints)
-        {
-            if (MinimalPathLengthToAny(board, point, winPoints) > -1)
-                return true;
-            return false;
-        }
-
         //A*
-        public int MinimalPathLengthToAny(IReadableBoard board, Point point, List<Point> winPoints)
+        public PathFinderResult PathExistsToAnyWinPoint(IReadableBoard board, IReadablePawn currentPawn)
         {
             HashSet<Point> allPoints = new HashSet<Point>();
             FastPriorityQueue<Node<Point>> unvisited = new FastPriorityQueue<Node<Point>>(board.Tiles.Length); //PriorityQueue in .NET 6
 
+            Point point = board.GetPawnPosition(currentPawn);
+            IEnumerable<Point> winPoints = board.GetWinPointsForPlayer(currentPawn);
             allPoints.Add(point);
             unvisited.Enqueue(new Node<Point>(point, 0), 0);
 
@@ -49,7 +44,7 @@ namespace Quoridor.Core.Implementation
                 Node<Point> currentPoint = unvisited.Dequeue();
 
                 if (winPoints.Where(x => x.Equals(currentPoint.Value)).Cast<Point?>().FirstOrDefault() != null)
-                    return currentPoint.PathLength;
+                    return new PathFinderResult(true, currentPoint.PathLength);
 
 
                 List<Point> newPoints = _stepsProvider.GetPossibleSteps(board, currentPoint.Value);
@@ -60,14 +55,14 @@ namespace Quoridor.Core.Implementation
                     if (!allPoints.Contains(newPoint))
                     {
                         int PathLength = currentPoint.PathLength + 1;
-                        int priority = PathLength + Heuristic(newPoint, winPoints);
+                        int priority = PathLength + Heuristic(newPoint, winPoints.ToList());
 
                         allPoints.Add(newPoint);
                         unvisited.Enqueue(new Node<Point>(newPoint, PathLength), priority);
                     }
                 }
             }
-            return -1;
+            return new PathFinderResult(false);
         }
 
         private int Heuristic(Point point, List<Point> winPoints)

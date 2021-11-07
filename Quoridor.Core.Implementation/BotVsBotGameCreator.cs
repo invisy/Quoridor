@@ -9,7 +9,6 @@ namespace Quoridor.Core.Implementation
         {
             int fencesNumber = 10;
 
-            IBoard board = new Board(9);
             IStepsProvider stepsProvider = new StepsProvider();
             IPathFinder pathFinder = new PathFinder(stepsProvider);
 
@@ -18,7 +17,9 @@ namespace Quoridor.Core.Implementation
             IPawn player1 = new MiniMaxBotPawn("Bot1", fencesNumber, firstPlayerColor, pathFinder, stepsProvider);
             IPawn player2 = new MiniMaxBotPawn("Bot2", fencesNumber, secondPlayerColor, pathFinder, stepsProvider);
 
-            IGameEngine gameEngine = new GameEngine(board, pathFinder, stepsProvider, player1, player2);
+            IBoard board = new Board(9, player1, player2);
+
+            IGameEngine gameEngine = new GameEngine(board, pathFinder, stepsProvider);
 
             return gameEngine;
         }

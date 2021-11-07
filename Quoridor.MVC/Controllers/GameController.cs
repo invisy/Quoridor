@@ -65,7 +65,7 @@ namespace Quoridor.MVC
 
         void ShowState()
         {
-            gameStateView.DrawState(currentGameEngine.AllPlayers, currentGameEngine.CurrentPlayer);
+            gameStateView.DrawState(currentGameEngine.Board.GetPawns(), currentGameEngine.CurrentPlayer);
         }
 
         void ShowWrongCommandMessage(WrongCommandReason reason)

@@ -8,7 +8,6 @@ namespace Quoridor.Core.Abstraction
     {
         IReadableBoard Board { get; }
         IReadablePawn CurrentPlayer { get; }
-        IReadOnlyList<IReadablePawn> AllPlayers { get; }
         Stack<Move> MoveHistory { get; }
         IReadablePawn? Winner { get; }
         event Action GameStarted;
@@ -16,7 +15,6 @@ namespace Quoridor.Core.Abstraction
         event Action GameEnded;
         bool TryMovePawn(Point position, bool isJump = false);
         bool TryPlaceFence(Point position, FenceDirection direction);
-        public IEnumerable<Point> GetWinPointsForPlayer(IPawn pawn);
         void Start();
     }
 }
