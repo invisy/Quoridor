@@ -29,12 +29,13 @@ namespace Quoridor.Core.Implementation
         }
 
         //A*
-        public PathFinderResult PathExistsToAnyWinPoint(IReadableBoard board, IReadablePawn currentPawn)
+        public PathFinderResult PathExistsToAnyWinPoint(IBoard board, IReadablePawn currentPawn)
         {
             HashSet<Point> allPoints = new HashSet<Point>();
             FastPriorityQueue<Node<Point>> unvisited = new FastPriorityQueue<Node<Point>>(board.Tiles.Length); //PriorityQueue in .NET 6
 
             Point point = board.GetPawnPosition(currentPawn);
+            
             IEnumerable<Point> winPoints = board.GetWinPointsForPlayer(currentPawn);
             allPoints.Add(point);
             unvisited.Enqueue(new Node<Point>(point, 0), 0);
@@ -42,13 +43,14 @@ namespace Quoridor.Core.Implementation
             while (unvisited.Count > 0)
             {
                 Node<Point> currentPoint = unvisited.Dequeue();
+                board.TrySetPawn((IPawn)currentPawn, currentPoint.Value);
 
                 if (winPoints.Where(x => x.Equals(currentPoint.Value)).Cast<Point?>().FirstOrDefault() != null)
                     return new PathFinderResult(true, currentPoint.PathLength);
 
 
-                List<Point> newPoints = _stepsProvider.GetPossibleSteps(board, currentPoint.Value);
-                newPoints.AddRange(_stepsProvider.GetPossibleJumps(board, currentPoint.Value));
+                List<Point> newPoints = _stepsProvider.GetPossibleSteps(board, currentPawn);
+                newPoints.AddRange(_stepsProvider.GetPossibleJumps(board, currentPawn));
 
                 foreach (Point newPoint in newPoints)
                 {

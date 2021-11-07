@@ -5,7 +5,7 @@ namespace Quoridor.Core.Abstraction
 {
     public interface IStepsProvider
     {
-        List<Point> GetPossibleSteps(IReadableBoard board, Point startPoint);
-        List<Point> GetPossibleJumps(IReadableBoard board, Point startPoint);
+        List<Point> GetPossibleSteps(IReadableBoard board, IReadablePawn pawn);
+        List<Point> GetPossibleJumps(IReadableBoard board, IReadablePawn pawn);
     }
 }

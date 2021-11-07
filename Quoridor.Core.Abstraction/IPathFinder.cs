@@ -5,6 +5,6 @@ namespace Quoridor.Core.Abstraction
 {
     public interface IPathFinder
     {
-        PathFinderResult PathExistsToAnyWinPoint(IReadableBoard board, IReadablePawn currentPlayer);
+        PathFinderResult PathExistsToAnyWinPoint(IBoard board, IReadablePawn currentPlayer);
     }
 }

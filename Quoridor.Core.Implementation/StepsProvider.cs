@@ -9,59 +9,61 @@ namespace Quoridor.Core.Implementation
         private int _boardSideLength = 0;
         IReadableBoard? _board;
 
-        public List<Point> GetPossibleSteps(IReadableBoard board, Point startPoint)
+        public List<Point> GetPossibleSteps(IReadableBoard board, IReadablePawn pawn)
         {
             List<Point> points = new List<Point>();
+            Point currentPlayerPosition = board.GetPawnPosition(pawn);
 
             _boardSideLength = board.Tiles.GetLength(0);
             _board = board;
 
-            if (PassageUpExists(startPoint))
-                points.Add(startPoint + (0, -1));
-            if (PassageDownExists(startPoint))
-                points.Add(startPoint + (0, 1));
-            if (PassageLeftExists(startPoint))
-                points.Add(startPoint + (-1, 0));
-            if (PassageRightExists(startPoint))
-                points.Add(startPoint + (1, 0));
+            if (PassageUpExists(currentPlayerPosition, pawn))
+                points.Add(currentPlayerPosition + (0, -1));
+            if (PassageDownExists(currentPlayerPosition, pawn))
+                points.Add(currentPlayerPosition + (0, 1));
+            if (PassageLeftExists(currentPlayerPosition, pawn))
+                points.Add(currentPlayerPosition + (-1, 0));
+            if (PassageRightExists(currentPlayerPosition, pawn))
+                points.Add(currentPlayerPosition + (1, 0));
 
             return points;
         }
 
-        public List<Point> GetPossibleJumps(IReadableBoard board, Point startPoint)
+        public List<Point> GetPossibleJumps(IReadableBoard board, IReadablePawn pawn)
         {
             List<Point> points = new List<Point>();
+            Point currentPlayerPosition = board.GetPawnPosition(pawn);
 
             _boardSideLength = board.Tiles.GetLength(0);
             _board = board;
 
-            points.AddRange(GetPossibleUpSteps(startPoint));
-            points.AddRange(GetPossibleDownSteps(startPoint));
-            points.AddRange(GetPossibleLeftSteps(startPoint));
-            points.AddRange(GetPossibleRightSteps(startPoint));
+            points.AddRange(GetPossibleUpSteps(currentPlayerPosition, pawn));
+            points.AddRange(GetPossibleDownSteps(currentPlayerPosition, pawn));
+            points.AddRange(GetPossibleLeftSteps(currentPlayerPosition, pawn));
+            points.AddRange(GetPossibleRightSteps(currentPlayerPosition, pawn));
 
             return points;
         }
 
-        private List<Point> GetPossibleUpSteps(Point point)
+        private List<Point> GetPossibleUpSteps(Point point, IReadablePawn currentPlayer)
         {
             List<Point> points = new List<Point>();
 
-            if (PassageUpExists(point) && _board.Tiles[point.X, point.Y - 1] != null)
+            if (PassageUpExists(point, currentPlayer) && _board.Tiles[point.X, point.Y - 1] != null)
             {
                 Point jumpOverPlayer = new Point(point.X, point.Y - 1);
 
-                if (PassageUpExists(jumpOverPlayer) && (_board.Tiles[jumpOverPlayer.X, jumpOverPlayer.Y - 1] == null))
+                if (PassageUpExists(jumpOverPlayer, currentPlayer) && (_board.Tiles[jumpOverPlayer.X, jumpOverPlayer.Y - 1] == null))
                 {
                     points.Add(new Point(jumpOverPlayer.X, jumpOverPlayer.Y - 1));
                 }
                 else
                 {
-                    if (PassageLeftExists(jumpOverPlayer) && _board.Tiles[jumpOverPlayer.X - 1, jumpOverPlayer.Y] == null)
+                    if (PassageLeftExists(jumpOverPlayer, currentPlayer) && _board.Tiles[jumpOverPlayer.X - 1, jumpOverPlayer.Y] == null)
                     {
                         points.Add(new Point(jumpOverPlayer.X - 1, jumpOverPlayer.Y));
                     }
-                    if (PassageRightExists(jumpOverPlayer) && _board.Tiles[jumpOverPlayer.X + 1, jumpOverPlayer.Y] == null)
+                    if (PassageRightExists(jumpOverPlayer, currentPlayer) && _board.Tiles[jumpOverPlayer.X + 1, jumpOverPlayer.Y] == null)
                     {
                         points.Add(new Point(jumpOverPlayer.X + 1, jumpOverPlayer.Y));
                     }
@@ -71,26 +73,26 @@ namespace Quoridor.Core.Implementation
             return points;
         }
 
-        private List<Point> GetPossibleDownSteps(Point point)
+        private List<Point> GetPossibleDownSteps(Point point, IReadablePawn currentPlayer)
         {
             List<Point> points = new List<Point>();
 
-            if (PassageDownExists(point))
+            if (PassageDownExists(point, currentPlayer))
             {
                 if (_board.Tiles[point.X, point.Y + 1] != null)
                 {
                     Point jumpOverPlayer = new Point(point.X, point.Y + 1);
-                    if (PassageDownExists(jumpOverPlayer) && _board.Tiles[jumpOverPlayer.X, jumpOverPlayer.Y + 1] == null)
+                    if (PassageDownExists(jumpOverPlayer, currentPlayer) && _board.Tiles[jumpOverPlayer.X, jumpOverPlayer.Y + 1] == null)
                     {
                         points.Add(new Point(jumpOverPlayer.X, jumpOverPlayer.Y + 1));
                     }
                     else
                     {
-                        if (PassageLeftExists(jumpOverPlayer) && _board.Tiles[jumpOverPlayer.X - 1, jumpOverPlayer.Y] == null)
+                        if (PassageLeftExists(jumpOverPlayer, currentPlayer) && _board.Tiles[jumpOverPlayer.X - 1, jumpOverPlayer.Y] == null)
                         {
                             points.Add(new Point(jumpOverPlayer.X - 1, jumpOverPlayer.Y));
                         }
-                        if (PassageRightExists(jumpOverPlayer) && _board.Tiles[jumpOverPlayer.X + 1, jumpOverPlayer.Y] == null)
+                        if (PassageRightExists(jumpOverPlayer, currentPlayer) && _board.Tiles[jumpOverPlayer.X + 1, jumpOverPlayer.Y] == null)
                         {
                             points.Add(new Point(jumpOverPlayer.X + 1, jumpOverPlayer.Y));
                         }
@@ -101,26 +103,26 @@ namespace Quoridor.Core.Implementation
             return points;
         }
 
-        private List<Point> GetPossibleLeftSteps(Point point)
+        private List<Point> GetPossibleLeftSteps(Point point, IReadablePawn currentPlayer)
         {
             List<Point> points = new List<Point>();
 
-            if (PassageLeftExists(point))
+            if (PassageLeftExists(point, currentPlayer))
             {
                 if (_board.Tiles[point.X - 1, point.Y] != null)
                 {
                     Point jumpOverPlayer = new Point(point.X - 1, point.Y);
-                    if (PassageLeftExists(jumpOverPlayer) && _board.Tiles[jumpOverPlayer.X - 1, jumpOverPlayer.Y] == null)
+                    if (PassageLeftExists(jumpOverPlayer, currentPlayer) && _board.Tiles[jumpOverPlayer.X - 1, jumpOverPlayer.Y] == null)
                     {
                         points.Add(new Point(jumpOverPlayer.X - 1, jumpOverPlayer.Y));
                     }
                     else
                     {
-                        if (PassageUpExists(jumpOverPlayer) && _board.Tiles[jumpOverPlayer.X, jumpOverPlayer.Y - 1] == null)
+                        if (PassageUpExists(jumpOverPlayer, currentPlayer) && _board.Tiles[jumpOverPlayer.X, jumpOverPlayer.Y - 1] == null)
                         {
                             points.Add(new Point(jumpOverPlayer.X, jumpOverPlayer.Y - 1));
                         }
-                        if (PassageDownExists(jumpOverPlayer) && _board.Tiles[jumpOverPlayer.X, jumpOverPlayer.Y + 1] == null)
+                        if (PassageDownExists(jumpOverPlayer, currentPlayer) && _board.Tiles[jumpOverPlayer.X, jumpOverPlayer.Y + 1] == null)
                         {
                             points.Add(new Point(jumpOverPlayer.X, jumpOverPlayer.Y + 1));
                         }
@@ -131,26 +133,26 @@ namespace Quoridor.Core.Implementation
             return points;
         }
 
-        private List<Point> GetPossibleRightSteps(Point point)
+        private List<Point> GetPossibleRightSteps(Point point, IReadablePawn currentPlayer)
         {
             List<Point> points = new List<Point>();
 
-            if (PassageRightExists(point))
+            if (PassageRightExists(point, currentPlayer))
             {
                 if (_board.Tiles[point.X + 1, point.Y] != null)
                 {
                     Point jumpOverPlayer = new Point(point.X + 1, point.Y);
-                    if (PassageRightExists(jumpOverPlayer) && _board.Tiles[jumpOverPlayer.X + 1, jumpOverPlayer.Y] == null)
+                    if (PassageRightExists(jumpOverPlayer, currentPlayer) && _board.Tiles[jumpOverPlayer.X + 1, jumpOverPlayer.Y] == null)
                     {
                         points.Add(new Point(jumpOverPlayer.X + 1, jumpOverPlayer.Y));
                     }
                     else
                     {
-                        if (PassageUpExists(jumpOverPlayer) && _board.Tiles[jumpOverPlayer.X, jumpOverPlayer.Y - 1] == null)
+                        if (PassageUpExists(jumpOverPlayer, currentPlayer) && _board.Tiles[jumpOverPlayer.X, jumpOverPlayer.Y - 1] == null)
                         {
                             points.Add(new Point(jumpOverPlayer.X, jumpOverPlayer.Y - 1));
                         }
-                        if (PassageDownExists(jumpOverPlayer) && _board.Tiles[jumpOverPlayer.X, jumpOverPlayer.Y + 1] == null)
+                        if (PassageDownExists(jumpOverPlayer, currentPlayer) && _board.Tiles[jumpOverPlayer.X, jumpOverPlayer.Y + 1] == null)
                         {
                             points.Add(new Point(jumpOverPlayer.X, jumpOverPlayer.Y + 1));
                         }
@@ -161,7 +163,7 @@ namespace Quoridor.Core.Implementation
             return points;
         }
 
-        private bool PassageUpExists(Point playerCoordinate)
+        private bool PassageUpExists(Point playerCoordinate, IReadablePawn currentPlayer)
         {
             if(!PlayerIsOnTopSide(playerCoordinate))
             {
@@ -170,13 +172,14 @@ namespace Quoridor.Core.Implementation
 
                 bool blockedByLeftFence = (leftFence?.Direction == FenceDirection.Horizontal);
                 bool blockedByRightFence = (rightFence?.Direction == FenceDirection.Horizontal);
+                bool blockedByAnotherPlayer = _board.Tiles[playerCoordinate.X, playerCoordinate.Y] != null && _board.Tiles[playerCoordinate.X, playerCoordinate.Y] != currentPlayer;
 
-                return !blockedByLeftFence && !blockedByRightFence;
+                return !blockedByLeftFence && !blockedByRightFence && !blockedByAnotherPlayer;
             }
             
             return false;
         }
-        private bool PassageDownExists(Point playerCoordinate)
+        private bool PassageDownExists(Point playerCoordinate, IReadablePawn currentPlayer)
         {
             if(!PlayerIsOnBottomSide(playerCoordinate))
             {
@@ -185,13 +188,14 @@ namespace Quoridor.Core.Implementation
 
                 bool blockedByLeftFence = (leftFence?.Direction == FenceDirection.Horizontal);
                 bool blockedByRightFence = (rightFence?.Direction == FenceDirection.Horizontal);
+                bool blockedByAnotherPlayer = _board.Tiles[playerCoordinate.X, playerCoordinate.Y] != null && _board.Tiles[playerCoordinate.X, playerCoordinate.Y] != currentPlayer;
 
-                return !blockedByLeftFence && !blockedByRightFence;
+                return !blockedByLeftFence && !blockedByRightFence && !blockedByAnotherPlayer;
             }
 
             return false;
         }
-        private bool PassageLeftExists(Point playerCoordinate)
+        private bool PassageLeftExists(Point playerCoordinate, IReadablePawn currentPlayer)
         {
             if(!PlayerIsOnLeftSide(playerCoordinate))
             {
@@ -200,13 +204,14 @@ namespace Quoridor.Core.Implementation
 
                 bool blockedByUpperFence = (upperFence?.Direction == FenceDirection.Vertical);
                 bool blockedByLowerFence = (lowerFence?.Direction == FenceDirection.Vertical);
+                bool blockedByAnotherPlayer = _board.Tiles[playerCoordinate.X, playerCoordinate.Y] != null && _board.Tiles[playerCoordinate.X, playerCoordinate.Y] != currentPlayer;
 
-                return !blockedByUpperFence && !blockedByLowerFence;
+                return !blockedByUpperFence && !blockedByLowerFence && !blockedByAnotherPlayer;
             }
 
             return false;
         }
-        private bool PassageRightExists(Point playerCoordinate)
+        private bool PassageRightExists(Point playerCoordinate, IReadablePawn currentPlayer)
         {
             if(!PlayerIsOnRightSide(playerCoordinate))
             {
@@ -215,8 +220,9 @@ namespace Quoridor.Core.Implementation
 
                 bool blockedByUpperFence = (upperFence?.Direction == FenceDirection.Vertical);
                 bool blockedByLowerFence = (lowerFence?.Direction == FenceDirection.Vertical);
+                bool blockedByAnotherPlayer = _board.Tiles[playerCoordinate.X, playerCoordinate.Y] != null && _board.Tiles[playerCoordinate.X, playerCoordinate.Y] != currentPlayer;
 
-                return !blockedByUpperFence && !blockedByLowerFence;
+                return !blockedByUpperFence && !blockedByLowerFence && !blockedByAnotherPlayer;
             }
 
             return false;

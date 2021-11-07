@@ -8,7 +8,7 @@ namespace Quoridor.Core.Implementation
 {
     public class MiniMaxBotPawn : Pawn, IBotPawn
     {
-        private const int DEPTH = 2;
+        private int DEPTH = 2;
 
         private IGameEngine _engine;
         private IPathFinder _pathFinder;
@@ -34,6 +34,9 @@ namespace Quoridor.Core.Implementation
             Move bestMove = null;
 
             IEnumerable<Move> allMoves = GetAllMoves(board, this);
+
+            /*if (allMoves.Count() < 20)
+                DEPTH = DEPTH + 2;*/
 
             foreach (Move move in allMoves)
             {
@@ -143,12 +146,12 @@ namespace Quoridor.Core.Implementation
         {
             List<Move> moves = new();
 
-            List<Point> steps = _stepsProvider.GetPossibleSteps(currentBoard, currentBoard.GetPawnPosition(pawn));
+            List<Point> steps = _stepsProvider.GetPossibleSteps(currentBoard, pawn);
 
             foreach (Point step in steps)
                 moves.Add(new Move(step, pawn));
 
-            List<Point> jumps = _stepsProvider.GetPossibleJumps(currentBoard, currentBoard.GetPawnPosition(pawn));
+            List<Point> jumps = _stepsProvider.GetPossibleJumps(currentBoard, pawn);
             foreach (Point jump in jumps)
                 moves.Add(new Move(jump, pawn, true));
 

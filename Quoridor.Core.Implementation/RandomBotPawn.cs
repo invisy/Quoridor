@@ -36,7 +36,7 @@ namespace Quoridor.Core.Implementation
         {
             IStepsProvider stepsProvider = new StepsProvider();
             IReadableBoard currentBoard = gameEngine.Board;
-            List<Point> steps = stepsProvider.GetPossibleSteps(currentBoard, currentBoard.GetPawnPosition(this));
+            List<Point> steps = stepsProvider.GetPossibleSteps(currentBoard, this);
 
             while (steps.Count > 0)
             {
