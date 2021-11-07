@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Quoridor.Core.Implementatio
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Quoridor.MVC", "Quoridor.MVC\Quoridor.MVC.csproj", "{D3C03089-50FB-4A6C-AE55-80098E72CCBC}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Qouridor.ConsoleAI", "Qouridor.ConsoleAI\Qouridor.ConsoleAI.csproj", "{F4503C52-CFA9-477D-8237-E6D686B2BF03}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{D3C03089-50FB-4A6C-AE55-80098E72CCBC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D3C03089-50FB-4A6C-AE55-80098E72CCBC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D3C03089-50FB-4A6C-AE55-80098E72CCBC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F4503C52-CFA9-477D-8237-E6D686B2BF03}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F4503C52-CFA9-477D-8237-E6D686B2BF03}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F4503C52-CFA9-477D-8237-E6D686B2BF03}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F4503C52-CFA9-477D-8237-E6D686B2BF03}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

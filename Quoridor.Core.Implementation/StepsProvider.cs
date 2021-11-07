@@ -47,26 +47,23 @@ namespace Quoridor.Core.Implementation
         {
             List<Point> points = new List<Point>();
 
-            if (PassageUpExists(point))
+            if (PassageUpExists(point) && _board.Tiles[point.X, point.Y - 1] != null)
             {
-                if (_board.Tiles[point.X, point.Y - 1] != null)
-                {
-                    Point jumpOverPlayer = new Point(point.X, point.Y - 1);
+                Point jumpOverPlayer = new Point(point.X, point.Y - 1);
 
-                    if (PassageUpExists(jumpOverPlayer) && (_board.Tiles[jumpOverPlayer.X, jumpOverPlayer.Y - 1] == null))
+                if (PassageUpExists(jumpOverPlayer) && (_board.Tiles[jumpOverPlayer.X, jumpOverPlayer.Y - 1] == null))
+                {
+                    points.Add(new Point(jumpOverPlayer.X, jumpOverPlayer.Y - 1));
+                }
+                else
+                {
+                    if (PassageLeftExists(jumpOverPlayer) && _board.Tiles[jumpOverPlayer.X - 1, jumpOverPlayer.Y] == null)
                     {
-                        points.Add(new Point(jumpOverPlayer.X, jumpOverPlayer.Y - 1));
+                        points.Add(new Point(jumpOverPlayer.X - 1, jumpOverPlayer.Y));
                     }
-                    else
+                    if (PassageRightExists(jumpOverPlayer) && _board.Tiles[jumpOverPlayer.X + 1, jumpOverPlayer.Y] == null)
                     {
-                        if (PassageLeftExists(jumpOverPlayer) && _board.Tiles[jumpOverPlayer.X - 1, jumpOverPlayer.Y] == null)
-                        {
-                            points.Add(new Point(jumpOverPlayer.X - 1, jumpOverPlayer.Y));
-                        }
-                        if (PassageRightExists(jumpOverPlayer) && _board.Tiles[jumpOverPlayer.X + 1, jumpOverPlayer.Y] == null)
-                        {
-                            points.Add(new Point(jumpOverPlayer.X + 1, jumpOverPlayer.Y));
-                        }
+                        points.Add(new Point(jumpOverPlayer.X + 1, jumpOverPlayer.Y));
                     }
                 }
             }

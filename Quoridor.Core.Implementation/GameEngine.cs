@@ -19,7 +19,7 @@ namespace Quoridor.Core.Implementation
         private IStepsProvider _stepsProvider;
 
         public event Action? GameStarted;
-        public event Action? BoardUpdated;
+        public event Action<Move>? BoardUpdated;
         public event Action? GameEnded;
 
         public IReadableBoard Board => (IReadableBoard)_board.Clone();
@@ -76,14 +76,13 @@ namespace Quoridor.Core.Implementation
 
         private void SwitchPlayer()
         {
+            BoardUpdated?.Invoke(MoveHistory.Peek());
             _currentPlayer = _currentPlayer.Next ?? _playerPawns.First;
-            BoardUpdated?.Invoke();
 
             if (_winner == null && _currentPlayer.Value is IBotPawn)
             {
                 IBotPawn bot = (IBotPawn)_currentPlayer.Value;
                 bot.Run(this);
-                BoardUpdated?.Invoke();
             }
         }
 
@@ -117,8 +116,9 @@ namespace Quoridor.Core.Implementation
                         _winner = _currentPlayer.Value;
                         GameEnded?.Invoke();
                     }
-                    SwitchPlayer();
+
                     MoveHistory.Push(new Move(position, CurrentPlayer, isJump));
+                    SwitchPlayer();
                     return true;
                 }
             }
@@ -146,8 +146,8 @@ namespace Quoridor.Core.Implementation
                 }
 
                 _currentPlayer.Value.TryTakeFence();
-                SwitchPlayer();
                 MoveHistory.Push(new Move(position, direction, CurrentPlayer));
+                SwitchPlayer();
                 return true;
             }
 

@@ -35,7 +35,7 @@ namespace Quoridor.Core.Implementation
             return false;
         }
 
-            //A*
+        //A*
         public int MinimalPathLengthToAny(IReadableBoard board, Point point, List<Point> winPoints)
         {
             HashSet<Point> allPoints = new HashSet<Point>();

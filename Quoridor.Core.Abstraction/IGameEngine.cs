@@ -12,7 +12,7 @@ namespace Quoridor.Core.Abstraction
         Stack<Move> MoveHistory { get; }
         IReadablePawn? Winner { get; }
         event Action GameStarted;
-        event Action BoardUpdated;
+        event Action<Move>? BoardUpdated;
         event Action GameEnded;
         bool TryMovePawn(Point position, bool isJump = false);
         bool TryPlaceFence(Point position, FenceDirection direction);

@@ -15,8 +15,8 @@ namespace Quoridor.Core.Implementation
 
             PawnColor secondPlayerColor = (firstPlayerColor == PawnColor.White) ? PawnColor.Black : PawnColor.White;
 
-            IPawn player1 = new RandomBotPawn("Bot1", fencesNumber, firstPlayerColor);
-            IPawn player2 = new RandomBotPawn("Bot2", fencesNumber, secondPlayerColor);
+            IPawn player1 = new MiniMaxBotPawn("Bot1", fencesNumber, firstPlayerColor, pathFinder, stepsProvider);
+            IPawn player2 = new MiniMaxBotPawn("Bot2", fencesNumber, secondPlayerColor, pathFinder, stepsProvider);
 
             IGameEngine gameEngine = new GameEngine(board, pathFinder, stepsProvider, player1, player2);
 
