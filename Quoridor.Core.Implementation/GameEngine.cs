@@ -21,7 +21,7 @@ namespace Quoridor.Core.Implementation
         public event Action<Move>? BoardUpdated;
         public event Action? GameEnded;
 
-        public IReadableBoard Board => (IReadableBoard)((Board)_board).Clone(_board); //Temporary fix
+        public IReadableBoard Board => (IReadableBoard)_board.Clone();
         public IReadablePawn CurrentPlayer => _currentPlayer.Value;
         public IReadablePawn? Winner => _winner;
 
@@ -68,9 +68,9 @@ namespace Quoridor.Core.Implementation
             Point oldPosition = _board.GetPawnPosition(_currentPlayer.Value);
             bool moveIsPossible = false;
             if (isJump)
-                moveIsPossible = _stepsProvider.GetPossibleJumps(Board, _currentPlayer.Value).Where(x => x.Equals(position)).Cast<Point?>().FirstOrDefault() != null;
+                moveIsPossible = _stepsProvider.GetPossibleJumps(Board, oldPosition).Where(x => x.Equals(position)).Cast<Point?>().FirstOrDefault() != null;
             else
-                moveIsPossible = _stepsProvider.GetPossibleSteps(Board, _currentPlayer.Value).Where(x => x.Equals(position)).Cast<Point?>().FirstOrDefault() != null;
+                moveIsPossible = _stepsProvider.GetPossibleSteps(Board, oldPosition).Where(x => x.Equals(position)).Cast<Point?>().FirstOrDefault() != null;
 
             if (moveIsPossible)
             {
@@ -78,7 +78,7 @@ namespace Quoridor.Core.Implementation
                 {
                     foreach (IPawn pawn in _playerPawns)
                     {
-                        PathFinderResult pathFinderResult = _pathFinder.PathExistsToAnyWinPoint((IBoard)Board, pawn);
+                        PathFinderResult pathFinderResult = _pathFinder.PathExistsToAnyWinPoint(Board, pawn);
                         if (!pathFinderResult.PathExists)
                         {
                             _board.TrySetPawn(_currentPlayer.Value, oldPosition);
@@ -86,7 +86,7 @@ namespace Quoridor.Core.Implementation
                         }
                     }
 
-                    PathFinderResult pathFinderResultForCurrent = _pathFinder.PathExistsToAnyWinPoint((IBoard)Board, CurrentPlayer);
+                    PathFinderResult pathFinderResultForCurrent = _pathFinder.PathExistsToAnyWinPoint(Board, CurrentPlayer);
                     if (pathFinderResultForCurrent.PathLength == 0)
                     {
                         _winner = _currentPlayer.Value;
@@ -114,7 +114,7 @@ namespace Quoridor.Core.Implementation
             {
                 foreach (IPawn pawn in _playerPawns)
                 {
-                    PathFinderResult pathFinderResult = _pathFinder.PathExistsToAnyWinPoint((IBoard)Board, pawn);
+                    PathFinderResult pathFinderResult = _pathFinder.PathExistsToAnyWinPoint(Board, pawn);
                     if (!pathFinderResult.PathExists)
                     {
                         _board.RemoveFenceIfExists(position);

@@ -7,34 +7,24 @@ namespace Quoridor.Core.Implementation
 {
     public class Board : IBoard
     {
-        public Dictionary<IReadablePawn, Point> _pawnPositions { get; set; } = new(); // cache players positions
-        public Dictionary<IReadablePawn, List<Point>> _winPoints { get; set; } = new();
+        private readonly Dictionary<IReadablePawn, Point> _pawnPositions = new(); // cache players positions
+        private readonly Dictionary<IReadablePawn, List<Point>> _winPoints = new();
+        private readonly IPawn?[,] _tiles;
+        private readonly Fence?[,] _fenceCrossroads;
 
-        public IReadablePawn[,] Tiles { get; set; }
-        public Fence[,] FenceCrossroads { get; set; }
+        public IReadablePawn[,] Tiles => _tiles;
+        public Fence[,] FenceCrossroads => _fenceCrossroads;
 
-        public Board() { }  //Temporary Clone Fix
         public Board(int sideSize, IPawn player1, IPawn player2)
         {
             if (sideSize % 2 == 1 && sideSize > 1)
             {
-                Tiles = new IPawn[sideSize, sideSize];
-                FenceCrossroads = new Fence[sideSize - 1, sideSize - 1];
+                _tiles = new IPawn[sideSize, sideSize];
+                _fenceCrossroads = new Fence[sideSize - 1, sideSize - 1];
                 InitializeTwoPlayers(player1, player2);
             }
             else
                 throw new ArgumentOutOfRangeException("Only odd positive value (except 1) is allowed!");
-        }
-
-        public IBoard Clone(IBoard board)
-        {
-            Board newBoard = new Board();
-            newBoard._pawnPositions = new Dictionary<IReadablePawn, Point>(_pawnPositions);
-            newBoard._winPoints = new Dictionary<IReadablePawn, List<Point>>(_winPoints);
-            newBoard.Tiles = (IReadablePawn[,])Tiles.Clone();
-            newBoard.FenceCrossroads = (Fence[,])FenceCrossroads.Clone();
-
-            return newBoard;
         }
 
         public IEnumerable<IReadablePawn> GetPawns()
@@ -53,10 +43,10 @@ namespace Quoridor.Core.Implementation
                 return false;
 
             if (_pawnPositions.ContainsKey(pawn))
-                Tiles[_pawnPositions[pawn].X, _pawnPositions[pawn].Y] = null;
+                _tiles[_pawnPositions[pawn].X, _pawnPositions[pawn].Y] = null;
 
             _pawnPositions[pawn] = coordinate;
-            Tiles[coordinate.X, coordinate.Y] = pawn;
+            _tiles[coordinate.X, coordinate.Y] = pawn;
 
             return true;
         }
@@ -67,18 +57,18 @@ namespace Quoridor.Core.Implementation
             if ((!PointIsOutOfFenceCrossroads(coordinate)) && FenceCrossroadIsClear(coordinate))
             {
                 if (fenceDirection == FenceDirection.Horizontal &&
-                    (coordinate.X == 0 || FenceCrossroads[coordinate.X - 1, coordinate.Y] == null || FenceCrossroads[coordinate.X - 1, coordinate.Y].Direction == FenceDirection.Vertical) &&
-                     (coordinate.X == FenceCrossroads.GetLength(0) - 1 || FenceCrossroads[coordinate.X + 1, coordinate.Y] == null || FenceCrossroads[coordinate.X + 1, coordinate.Y].Direction == FenceDirection.Vertical))
+                    (coordinate.X == 0 || _fenceCrossroads[coordinate.X - 1, coordinate.Y] == null || _fenceCrossroads[coordinate.X - 1, coordinate.Y].Direction == FenceDirection.Vertical) &&
+                     (coordinate.X == _fenceCrossroads.GetLength(0) - 1 || _fenceCrossroads[coordinate.X + 1, coordinate.Y] == null || _fenceCrossroads[coordinate.X + 1, coordinate.Y].Direction == FenceDirection.Vertical))
                 {
-                    FenceCrossroads[coordinate.X, coordinate.Y] = new Fence(fenceDirection);
+                    _fenceCrossroads[coordinate.X, coordinate.Y] = new Fence(fenceDirection);
                     return true;
                 }
                 else if (fenceDirection == FenceDirection.Vertical &&
-                         (coordinate.Y == 0 || FenceCrossroads[coordinate.X, coordinate.Y - 1] == null || FenceCrossroads[coordinate.X, coordinate.Y - 1].Direction == FenceDirection.Horizontal) &&
-                          (coordinate.Y == FenceCrossroads.GetLength(0) - 1 || FenceCrossroads[coordinate.X, coordinate.Y + 1] == null ||
-                                                        FenceCrossroads[coordinate.X, coordinate.Y + 1].Direction == FenceDirection.Horizontal))
+                         (coordinate.Y == 0 || _fenceCrossroads[coordinate.X, coordinate.Y - 1] == null || _fenceCrossroads[coordinate.X, coordinate.Y - 1].Direction == FenceDirection.Horizontal) &&
+                          (coordinate.Y == _fenceCrossroads.GetLength(0) - 1 || _fenceCrossroads[coordinate.X, coordinate.Y + 1] == null ||
+                                                        _fenceCrossroads[coordinate.X, coordinate.Y + 1].Direction == FenceDirection.Horizontal))
                 {
-                    FenceCrossroads[coordinate.X, coordinate.Y] = new Fence(fenceDirection);
+                    _fenceCrossroads[coordinate.X, coordinate.Y] = new Fence(fenceDirection);
                     return true;
                 }
             }
@@ -93,8 +83,8 @@ namespace Quoridor.Core.Implementation
 
         private void InitializeTwoPlayers(IPawn player1, IPawn player2)
         {
-            int center = Tiles.GetLength(0) / 2;
-            int max = Tiles.GetLength(0) - 1;
+            int center = _tiles.GetLength(0) / 2;
+            int max = _tiles.GetLength(0) - 1;
 
             if (player1.Color == PawnColor.Black && player2.Color == PawnColor.White)
             {
@@ -103,7 +93,7 @@ namespace Quoridor.Core.Implementation
                 player2 = tmp;
             }
 
-            TrySetPawn(player1, new Point(center, Tiles.GetLength(0) - 1));
+            TrySetPawn(player1, new Point(center, _tiles.GetLength(0) - 1));
             _winPoints.Add(player1, GenerateWinPoints(new Point(0, 0), new Point(max, 0)));
             TrySetPawn(player2, new Point(center, 0));
             _winPoints.Add(player2, GenerateWinPoints(new Point(0, max), new Point(max, max)));
@@ -125,28 +115,33 @@ namespace Quoridor.Core.Implementation
         {
             if (!PointIsOutOfFenceCrossroads(coordinate))
             {
-                FenceCrossroads[coordinate.X, coordinate.Y] = null;
+                _fenceCrossroads[coordinate.X, coordinate.Y] = null;
             }
         }
 
         private bool TileIsOccupied(Point point)
         {
-            return Tiles[point.X, point.Y] != null;
+            return _tiles[point.X, point.Y] != null;
         }
 
         private bool PointIsOutOfTiles(Point point)
         {
-            return point.X < 0 || point.Y < 0 || point.X >= Tiles.GetLength(0) || point.Y >= Tiles.GetLength(0);
+            return point.X < 0 || point.Y < 0 || point.X >= _tiles.GetLength(0) || point.Y >= _tiles.GetLength(0);
         }
 
         private bool PointIsOutOfFenceCrossroads(Point point)
         {
-            return point.X < 0 || point.Y < 0 || point.X >= FenceCrossroads.GetLength(0) || point.Y >= FenceCrossroads.GetLength(0);
+            return point.X < 0 || point.Y < 0 || point.X >= _fenceCrossroads.GetLength(0) || point.Y >= _fenceCrossroads.GetLength(0);
         }
 
         private bool FenceCrossroadIsClear(Point point)
         {
-            return FenceCrossroads[point.X, point.Y] == null;
+            return _fenceCrossroads[point.X, point.Y] == null;
+        }
+
+        public object Clone()
+        {
+            return this.MemberwiseClone();
         }
     }
 }
