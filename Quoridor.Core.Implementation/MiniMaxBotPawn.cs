@@ -37,12 +37,12 @@ namespace Quoridor.Core.Implementation
 
             foreach (Move move in allMoves)
             {
-                (int, Action) moveSimulation = SimulateMoveExecution(board, move);
+                (bool, Action) moveSimulation = SimulateMoveExecution(board, move);
                 Action cancelMove = moveSimulation.Item2;
 
-                if (moveSimulation.Item1 != int.MinValue)
+                if (moveSimulation.Item1)
                 {
-                    int result = MiniMax(board, DEPTH - 1, _enemy, MiniMaxEvaluation(-moveSimulation.Item1, _enemy));
+                    int result = -MiniMax(board, DEPTH - 1, _enemy);
 
                     if (result > bestResult)
                     {
@@ -57,24 +57,26 @@ namespace Quoridor.Core.Implementation
             ExecuteMove(bestMove);
         }
 
-        private int MiniMax(IBoard board, int depth, IReadablePawn pawn, int currentEvaluation)
+        private int MiniMax(IBoard board, int depth, IReadablePawn pawn)
         {
             IPawn currentEnemyPlayer = (IPawn)pawn == this ? _enemy : this;
             int bestResult = int.MinValue;
 
-            if (depth == 0)
-                return currentEvaluation;
+            int evaluation = MiniMaxEvaluation(board, pawn, currentEnemyPlayer);
+            
+            if (depth == 0 || evaluation == int.MaxValue || evaluation == -int.MaxValue)
+                return evaluation;
 
             IEnumerable<Move> allMoves = GetAllMoves(board, pawn);
             foreach (Move move in allMoves)
             {
-                (int, Action) moveSimulation = SimulateMoveExecution(board, move);
+                (bool, Action) moveSimulation = SimulateMoveExecution(board, move);
                 Action cancelMove = moveSimulation.Item2;
 
-                if (moveSimulation.Item1 != int.MinValue)
+                if (moveSimulation.Item1)
                 {
-                    int result = MiniMax(board, depth - 1, currentEnemyPlayer, MiniMaxEvaluation(-moveSimulation.Item1, currentEnemyPlayer));
-
+                    int result = -MiniMax(board, depth - 1, currentEnemyPlayer);
+                    
                     if (result > bestResult)
                         bestResult = result;
                 }
@@ -85,14 +87,22 @@ namespace Quoridor.Core.Implementation
             return bestResult;
         }
 
-        private int MiniMaxEvaluation(int pathDifference, IReadablePawn pawn)
+        private int MiniMaxEvaluation(IBoard board, IReadablePawn currentPlayer, IReadablePawn currentEnemyPlayer)
         {
-            return pathDifference;
+            PathFinderResult myDistance = _pathFinder.PathExistsToAnyWinPoint(board, currentPlayer);
+            PathFinderResult enemyDistance = _pathFinder.PathExistsToAnyWinPoint(board, currentEnemyPlayer);
+            
+            if (myDistance.PathLength == 0)
+                return int.MaxValue;
+            if (enemyDistance.PathLength == 0)
+                return -int.MaxValue;
+
+            return enemyDistance.PathLength - myDistance.PathLength - currentEnemyPlayer.NumberOfFences;
         }
 
-        private (int,Action) SimulateMoveExecution(IBoard board, Move move)
+        private (bool, Action) SimulateMoveExecution(IBoard board, Move move)
         {
-            int evaluation = int.MinValue;
+            bool moveSuccess = false;
             Action cancellationFunction = () => { };
 
             IPawn currentPlayer = (IPawn)move.MoveInitiator;
@@ -107,26 +117,28 @@ namespace Quoridor.Core.Implementation
                 PathFinderResult enemyDistance = _pathFinder.PathExistsToAnyWinPoint(board, currentEnemyPlayer);
 
                 if (myDistance.PathExists && enemyDistance.PathExists)
-                    evaluation = enemyDistance.PathLength - myDistance.PathLength;
-                else
-                    evaluation = int.MinValue;  // this move will be never called
+                    moveSuccess = true;
+                    
                 cancellationFunction = () => board.TrySetPawn(currentPlayer, oldPosition);
             }
             else if (move.MoveType == MoveType.PlaceFence)
             {
                 board.TryPutFence(move.FencePosition, move.FenceDirection);
+                currentPlayer.TryTakeFence();
 
                 PathFinderResult myDistance = _pathFinder.PathExistsToAnyWinPoint(board, currentPlayer);
                 PathFinderResult enemyDistance = _pathFinder.PathExistsToAnyWinPoint(board, currentEnemyPlayer);
 
                 if (myDistance.PathExists && enemyDistance.PathExists)
-                    evaluation = enemyDistance.PathLength - myDistance.PathLength;
-                else
-                    evaluation = int.MinValue;  // this move will be never called
-                cancellationFunction = () => board.RemoveFenceIfExists(move.FencePosition);
+                    moveSuccess = true;
+                cancellationFunction = () =>
+                {
+                    board.RemoveFenceIfExists(move.FencePosition);
+                    currentPlayer.AddOneFence();
+                };
             }
 
-            return (evaluation, cancellationFunction);
+            return (moveSuccess, cancellationFunction);
         }
 
         private void ExecuteMove(Move move)

@@ -29,5 +29,10 @@ namespace Quoridor.Core.Implementation
             NumberOfFences--;
             return true;
         }
+
+        public void AddOneFence()
+        {
+            NumberOfFences++;
+        }
     }
 }
