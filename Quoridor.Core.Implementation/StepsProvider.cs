@@ -16,13 +16,13 @@ namespace Quoridor.Core.Implementation
             _boardSideLength = board.Tiles.GetLength(0);
             _board = board;
 
-            if (PassageUpExists(startPoint))
+            if (PassageUpExists(startPoint) && _board.Tiles[startPoint.X, startPoint.Y - 1] == null)
                 points.Add(startPoint + (0, -1));
-            if (PassageDownExists(startPoint))
+            if (PassageDownExists(startPoint) && _board.Tiles[startPoint.X, startPoint.Y + 1] == null)
                 points.Add(startPoint + (0, 1));
-            if (PassageLeftExists(startPoint))
+            if (PassageLeftExists(startPoint) && _board.Tiles[startPoint.X-1, startPoint.Y] == null)
                 points.Add(startPoint + (-1, 0));
-            if (PassageRightExists(startPoint))
+            if (PassageRightExists(startPoint) && _board.Tiles[startPoint.X+1, startPoint.Y] == null)
                 points.Add(startPoint + (1, 0));
 
             return points;
