@@ -43,7 +43,7 @@ static class BoardRenderer
         
         return result;
     }
-
+    
     static void PutFences(IReadableBoard board)
     {
         for (int y = 0; y < board.FenceCrossroads.GetLength(1); y++)

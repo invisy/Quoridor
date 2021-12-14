@@ -8,12 +8,11 @@ using Quoridor.Core.Abstraction;
 using Quoridor.Core.Implementation;
 using Quoridor.Server.Extensions;
 using Quoridor.Server.Utilites;
-
 using Point = Quoridor.Core.Abstraction.Common.Point;
 
 class GameServer
 {
-    bool isGameFinished = false;
+    bool isGameFinished;
     
     const int Port = 3000;
 
@@ -25,50 +24,64 @@ class GameServer
     {
         listener = new SocketListener(Port);
     }
-    
-    void CreateTwoPlayersGame()
-    {
-        IGameCreator game = new TwoPlayersGameCreator();
-        currentGameEngine = game.Create();
-        currentGameEngine.GameEnded += GameEnded;
-        currentGameEngine.Start();
-    }
-    
+  
     public void Start()
     {
         CreateTwoPlayersGame();
             
         listener.Start(Handle);
     }
-
+    
+    void CreateTwoPlayersGame()
+    {
+        isGameFinished = false;
+        
+        IGameCreator game = new TwoPlayersGameCreator();
+        currentGameEngine = game.Create();
+        currentGameEngine.GameEnded += GameEnded;
+        currentGameEngine.Start();
+    }
+    
     void Handle(Socket player1Connection, Socket player2Connection)
     {
-        SendGameStarted(player1Connection);
-        RecievePlayerMove(player1Connection);
-        
-        SendGameStarted(player2Connection);
-        RecievePlayerMove(player2Connection);
+        ProcessPlayerFirstMove(player1Connection);
+        ProcessPlayerFirstMove(player2Connection);
 
         while (true)
         {
-            SendBoardUpdated(player1Connection);
-            RecievePlayerMove(player1Connection);
+            ProcessPlayerMove(player1Connection);
 
             if (isGameFinished)
             {
-                SendGameFinished(player1Connection, player2Connection);
+                FinishGame(player1Connection, player2Connection);
                 return;
             }
 
-            SendBoardUpdated(player2Connection);
-            RecievePlayerMove(player2Connection);
+            ProcessPlayerMove(player2Connection);
             
             if (isGameFinished)
             {
-                SendGameFinished(player1Connection, player2Connection);
+                FinishGame(player1Connection, player2Connection);
                 return;
             }
         }
+    }
+
+    void ProcessPlayerFirstMove(Socket connection)
+    {
+        SendGameStarted(connection);
+        RecievePlayerMove(connection);
+    }
+    
+    void ProcessPlayerMove(Socket connection1)
+    {
+        SendBoardUpdated(connection1);
+        RecievePlayerMove(connection1);
+    }
+    
+    void FinishGame(Socket connection1, Socket connection2)
+    {
+        SendGameFinished(connection1, connection2);
     }
 
     void RecievePlayerMove(Socket connection)
@@ -87,7 +100,7 @@ class GameServer
             {
                 ErrorResponse = new ErrorResponse()
                 {
-                    Message = error.ToString()! //GetMessage()
+                    Message = error.GetMessage()
                 }
             });
 
@@ -101,7 +114,7 @@ class GameServer
         {
             GameStartedResponse = new GameStartedResponse
             {
-                Board = BoardRenderer.Render(currentGameEngine.Board)
+                Board = GetTurnInfoMessage()
             }
         });
     }
@@ -112,7 +125,7 @@ class GameServer
         {
             BoardUpdatedResponse = new BoardUpdatedResponse
             {
-                Board = BoardRenderer.Render(currentGameEngine.Board),
+                Board = GetTurnInfoMessage(),
             }
         });
     }
@@ -233,11 +246,12 @@ class GameServer
     {
         isGameFinished = true;
     }
-    
-    /*string RenderWinnerMessage(Winner winner, string playerName) => winner switch
+
+    string GetTurnInfoMessage()
     {
-        Winner.Player => $"Congrats {playerName}! You have won this super extra bot!",
-        Winner.Bot => "Sorry, but you lost to bot(",
-        Winner.Draw => "It is draw! But you were close"
-    };*/
+        var gameStateMessage = GameStateRender.Render(currentGameEngine.Board.GetPawns(), currentGameEngine.CurrentPlayer);
+        var boardViewMessage = BoardRenderer.Render(currentGameEngine.Board);
+
+        return gameStateMessage + boardViewMessage;
+    }
 }

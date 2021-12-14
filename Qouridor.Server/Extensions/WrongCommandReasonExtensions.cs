@@ -4,7 +4,7 @@ namespace Quoridor.Server.Extensions;
 
 public static class WrongCommandReasonExtensions
 {
-    public static string GetMessage(this WrongCommandReason reason)
+    public static string GetMessage(this WrongCommandReason? reason)
     {
         return reason switch
         {
