@@ -1,8 +1,6 @@
-﻿namespace Qouridor.Contracts.Responses
+﻿namespace Qouridor.Contracts.Responses;
+
+public class GameStartedResponse
 {
-    public class GameStartedResponse
-    {
-        public string Board { get; set; }
-        //public Mark PlayerMark { get; set; }
-    }
+    public string Board { get; set; }
 }

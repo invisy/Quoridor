@@ -1,10 +1,6 @@
-﻿using System;
-using System.Drawing;
+﻿namespace Qouridor.Contracts.Requests;
 
-namespace Qouridor.Contracts.Requests
+public class MakeMoveRequest
 {
-    public class MakeMoveRequest
-    {
-        public string Command { get; set; }
-    }
+    public string Command { get; set; }
 }

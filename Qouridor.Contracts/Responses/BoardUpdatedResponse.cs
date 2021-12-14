@@ -1,7 +1,6 @@
-﻿namespace Qouridor.Contracts.Responses
+﻿namespace Qouridor.Contracts.Responses;
+
+public class BoardUpdatedResponse
 {
-    public class BoardUpdatedResponse
-    {
-        public string Board { get; set; }
-    }
+    public string Board { get; set; }
 }

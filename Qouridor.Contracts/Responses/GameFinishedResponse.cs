@@ -1,7 +1,6 @@
-﻿namespace Qouridor.Contracts.Responses
+﻿namespace Qouridor.Contracts.Responses;
+
+public class GameFinishedResponse
 {
-    public class GameFinishedResponse
-    {
-        public string WinnerMessage { get; set; }
-    }
+    public string WinnerMessage { get; set; }
 }
