@@ -22,21 +22,14 @@ class GameClient
 
         Console.WriteLine($"Starting your game! Waiting for players..");
 
-        //SocketConnection.Send(connection, new Requests { StartGameRequest = new StartGameRequest() });
-
         var gameStartedResponse = SocketConnection.Receive<Responses>(connection);
 
-        if (gameStartedResponse.GameStartedResponse is null)
-        {
-            throw null;
-        }
-        
         Console.WriteLine($"Game started! Time to make first move!");
         Console.WriteLine(gameStartedResponse.GameStartedResponse.Board);
 
         while (true)
         {
-            Console.WriteLine($"Make your move! movepawn <x> <y>, placewall <x> <y>, jump <x> <y>");
+            Console.WriteLine($"Make your move! movepawn <x> <y>, placewall <x> <y> <v|h>, jump <x> <y>");
 
             var command = Console.ReadLine()!;
 
@@ -52,8 +45,13 @@ class GameClient
                 Console.Clear();
                 Console.WriteLine(response.BoardUpdatedResponse.Board);
             }
+            if (response.ErrorResponse is not null)
+            {
+                Console.WriteLine(response.ErrorResponse.Message);
+            }
             else if (response.GameFinishedResponse is not null)
             {
+                Console.Clear();
                 Console.WriteLine(response.GameFinishedResponse.WinnerMessage);
 
                 Console.ReadKey();

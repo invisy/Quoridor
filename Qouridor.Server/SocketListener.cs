@@ -22,7 +22,7 @@ class SocketListener
         Console.WriteLine("Server started.");
 
         listenerSocket.Bind(new IPEndPoint(ipAddress, portNumber));
-        listenerSocket.Listen(5);
+        listenerSocket.Listen(4);
 
         while (true)
         {

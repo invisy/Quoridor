@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Quoridor.Server.Utilites
+﻿namespace Quoridor.Server.Utilites
 {
     public static class Char2DArrayToStringArrayConverter
     {

@@ -3,7 +3,6 @@
 try
 {
     var client = new GameClient();
-
     client.Start();
 }
 catch (Exception ex)
