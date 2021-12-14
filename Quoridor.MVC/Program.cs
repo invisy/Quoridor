@@ -1,4 +1,5 @@
 ﻿using System;
+using Quoridor.MVC.Controllers;
 
 namespace Quoridor.MVC
 {

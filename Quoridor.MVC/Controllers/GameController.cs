@@ -1,17 +1,15 @@
-﻿using Quoridor.Core.Abstraction;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Quoridor.Core.Abstraction;
 using Quoridor.Core.Abstraction.Common;
 using Quoridor.Core.Implementation;
 using Quoridor.MVC.Extensions;
 using Quoridor.MVC.Structures;
 using Quoridor.MVC.Utilites;
 using Quoridor.MVC.Views;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading;
 
-namespace Quoridor.MVC
+namespace Quoridor.MVC.Controllers
 {
     class GameController
     {
@@ -209,7 +207,7 @@ namespace Quoridor.MVC
         void CreatePlayerVsBotGame()
         {
             IGameCreator game = new PlayerVsBotGameCreator();
-            currentGameEngine = game.Create(PawnColor.White);
+            currentGameEngine = game.Create();
             currentGameEngine.GameEnded += GameEnded;
             currentGameEngine.Start();
         }
