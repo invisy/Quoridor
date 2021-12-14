@@ -34,7 +34,7 @@ class SocketListener
             Console.WriteLine("Second player joined.");
 
             handleConnection(player1ConnectionSocket, player2ConnectionSocket);
-            Console.WriteLine("Connection handled.");
+            Console.WriteLine("Connections handled.");
 
             player1ConnectionSocket.Shutdown(SocketShutdown.Both);
             player2ConnectionSocket.Shutdown(SocketShutdown.Both);

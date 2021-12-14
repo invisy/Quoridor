@@ -1,6 +1,6 @@
-﻿using Quoridor.Core.Abstraction;
+﻿using Qouridor.Server.Utilities;
+using Quoridor.Core.Abstraction;
 using Quoridor.Core.Abstraction.Common;
-using Quoridor.Server.Utilites;
 
 namespace Qouridor.Server.Renderers;
 

@@ -1,6 +1,6 @@
 ﻿namespace Qouridor.Server.Structures;
 
-public enum WrongCommandReason
+enum WrongCommandReason
 {
     IsNullOrEmpty,
     CommandNotFound,

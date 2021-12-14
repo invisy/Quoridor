@@ -2,7 +2,7 @@
 
 namespace Quoridor.Server.Extensions;
 
-public static class FenceDirectionExtensions
+static class FenceDirectionExtensions
 {
     public static FenceDirection? ParseFenceDirection(this string stringDirection)
     {

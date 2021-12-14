@@ -4,10 +4,11 @@ using Qouridor.Contracts.Requests;
 using Qouridor.Contracts.Responses;
 using Qouridor.Server.Renderers;
 using Qouridor.Server.Structures;
+using Qouridor.Server.Utilities;
 using Quoridor.Core.Abstraction;
 using Quoridor.Core.Implementation;
 using Quoridor.Server.Extensions;
-using Quoridor.Server.Utilites;
+
 using Point = Quoridor.Core.Abstraction.Common.Point;
 
 class GameServer

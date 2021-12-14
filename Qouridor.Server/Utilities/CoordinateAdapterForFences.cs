@@ -1,10 +1,9 @@
-﻿namespace Quoridor.Server.Utilites
+﻿namespace Qouridor.Server.Utilities;
+
+static class CoordinateAdapterForFences
 {
-    public static class CoordinateAdapterForFences
+    public static int AdaptForFence(this int coordinate)
     {
-        public static int AdaptForFence(this int coordinate)
-        {
-            return coordinate * 2 + 1;
-        }
+        return coordinate * 2 + 1;
     }
 }

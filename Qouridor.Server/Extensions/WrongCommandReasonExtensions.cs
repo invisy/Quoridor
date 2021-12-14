@@ -2,7 +2,7 @@
 
 namespace Quoridor.Server.Extensions;
 
-public static class WrongCommandReasonExtensions
+static class WrongCommandReasonExtensions
 {
     public static string GetMessage(this WrongCommandReason? reason)
     {

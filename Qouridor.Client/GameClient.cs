@@ -23,8 +23,9 @@ class GameClient
         Console.WriteLine($"Starting your game! Waiting for players..");
 
         var gameStartedResponse = SocketConnection.Receive<Responses>(connection);
-
-        Console.WriteLine($"Game started! Time to make first move!");
+        
+        Console.Clear();
+        Console.WriteLine($"Game started! Time to make your first move!");
         Console.WriteLine(gameStartedResponse.GameStartedResponse.Board);
 
         while (true)
