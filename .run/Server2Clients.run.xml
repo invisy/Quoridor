@@ -1,8 +1,0 @@
-﻿<component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Server2Clients" type="CompoundRunConfigurationType">
-    <toRun name="Qouridor.Server" type="DotNetProject" />
-	<toRun name="Qouridor.Client" type="DotNetProject" />
-	<toRun name="Qouridor.Client" type="DotNetProject" />
-    <method v="3" />
-  </configuration>
-</component>
