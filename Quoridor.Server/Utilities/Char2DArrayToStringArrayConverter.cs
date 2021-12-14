@@ -1,4 +1,4 @@
-﻿namespace Qouridor.Server.Utilities;
+﻿namespace Quoridor.Server.Utilities;
 
 static class Char2DArrayToStringArrayConverter
 {

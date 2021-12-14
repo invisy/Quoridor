@@ -1,8 +1,8 @@
-﻿using Qouridor.Server.Utilities;
+﻿using Quoridor.Server.Utilities;
 using Quoridor.Core.Abstraction;
 using Quoridor.Core.Abstraction.Common;
 
-namespace Qouridor.Server.Renderers;
+namespace Quoridor.Server.Renderers;
 
 static class BoardRenderer
 {

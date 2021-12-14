@@ -2,7 +2,7 @@
 using System.Net.Sockets;
 using System.Text.Json;
 
-namespace Qouridor.Client;
+namespace Quoridor.Client;
 
 class SocketConnection
 {

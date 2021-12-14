@@ -1,9 +1,9 @@
 ﻿using System.Net;
 
-using Qouridor.Contracts.Requests;
-using Qouridor.Contracts.Responses;
+using Quoridor.Contracts.Requests;
+using Quoridor.Contracts.Responses;
 
-namespace Qouridor.Client;
+namespace Quoridor.Client;
     
 class GameClient
 {

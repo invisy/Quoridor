@@ -1,6 +1,6 @@
 ﻿using Quoridor.Core.Abstraction;
 
-namespace Qouridor.Server.Renderers;
+namespace Quoridor.Server.Renderers;
 
 static class GameStateRender
 {

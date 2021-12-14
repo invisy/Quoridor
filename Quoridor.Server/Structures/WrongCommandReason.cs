@@ -1,4 +1,4 @@
-﻿namespace Qouridor.Server.Structures;
+﻿namespace Quoridor.Server.Structures;
 
 enum WrongCommandReason
 {

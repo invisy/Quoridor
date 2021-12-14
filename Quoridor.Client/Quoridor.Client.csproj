@@ -5,12 +5,11 @@
         <TargetFramework>net6.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <RootNamespace>Qouridor.Client</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Qouridor.Contracts\Qouridor.Contracts.csproj" />
-      <ProjectReference Include="..\Quoridor.Core.Abstraction\Quoridor.Core.Abstraction.csproj" />
-      <ProjectReference Include="..\Quoridor.Core.Implementation\Quoridor.Core.Implementation.csproj" />
+      <ProjectReference Include="..\Quoridor.Contracts\Quoridor.Contracts.csproj" />
     </ItemGroup>
 
 </Project>

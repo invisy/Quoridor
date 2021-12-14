@@ -1,4 +1,4 @@
-﻿namespace Qouridor.Contracts.Requests;
+﻿namespace Quoridor.Contracts.Requests;
 
 public class Requests
 {

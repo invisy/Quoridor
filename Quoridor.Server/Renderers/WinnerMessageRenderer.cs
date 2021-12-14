@@ -1,4 +1,4 @@
-﻿namespace Qouridor.Server.Renderers;
+﻿namespace Quoridor.Server.Renderers;
 
 static class WinnerMessageRenderer
 {

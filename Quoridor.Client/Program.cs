@@ -1,4 +1,4 @@
-﻿using Qouridor.Client;
+﻿using Quoridor.Client;
 
 try
 {

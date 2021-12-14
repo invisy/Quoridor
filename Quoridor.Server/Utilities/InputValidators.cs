@@ -1,6 +1,6 @@
 ﻿using Quoridor.Server.Extensions;
 
-namespace Qouridor.Server.Utilities;
+namespace Quoridor.Server.Utilities;
 
 static class InputValidators
 {

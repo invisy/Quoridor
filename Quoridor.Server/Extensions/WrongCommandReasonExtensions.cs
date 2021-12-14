@@ -1,4 +1,4 @@
-﻿using Qouridor.Server.Structures;
+﻿using Quoridor.Server.Structures;
 
 namespace Quoridor.Server.Extensions;
 

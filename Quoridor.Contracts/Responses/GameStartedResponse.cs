@@ -1,4 +1,4 @@
-﻿namespace Qouridor.Contracts.Responses;
+﻿namespace Quoridor.Contracts.Responses;
 
 public class GameStartedResponse
 {

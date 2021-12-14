@@ -7,11 +7,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Quoridor.Core.Abstraction",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Quoridor.Core.Implementation", "Quoridor.Core.Implementation\Quoridor.Core.Implementation.csproj", "{8D70505E-AABD-4644-9A37-D614491F63CE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Qouridor.Server", "Qouridor.Server\Qouridor.Server.csproj", "{781A49F1-0BCF-4E78-B547-958B8305B68B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Quoridor.Server", "Quoridor.Server\Quoridor.Server.csproj", "{781A49F1-0BCF-4E78-B547-958B8305B68B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Qouridor.Contracts", "Qouridor.Contracts\Qouridor.Contracts.csproj", "{1FD8C916-1B21-457A-94AD-F0E97C6747E8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Quoridor.Contracts", "Quoridor.Contracts\Quoridor.Contracts.csproj", "{1FD8C916-1B21-457A-94AD-F0E97C6747E8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Qouridor.Client", "Qouridor.Client\Qouridor.Client.csproj", "{7A2F9AB0-1EF5-4F6F-81F1-3E0D5DCA2FCE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Quoridor.Client", "Quoridor.Client\Quoridor.Client.csproj", "{7A2F9AB0-1EF5-4F6F-81F1-3E0D5DCA2FCE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

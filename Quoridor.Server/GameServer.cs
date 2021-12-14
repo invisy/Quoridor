@@ -1,10 +1,10 @@
 ﻿using System.Net.Sockets;
 
-using Qouridor.Contracts.Requests;
-using Qouridor.Contracts.Responses;
-using Qouridor.Server.Renderers;
-using Qouridor.Server.Structures;
-using Qouridor.Server.Utilities;
+using Quoridor.Contracts.Requests;
+using Quoridor.Contracts.Responses;
+using Quoridor.Server.Renderers;
+using Quoridor.Server.Structures;
+using Quoridor.Server.Utilities;
 using Quoridor.Core.Abstraction;
 using Quoridor.Core.Implementation;
 using Quoridor.Server.Extensions;
