@@ -2,8 +2,11 @@
 
 try
 {
-    var client = new GameClient();
-    client.Start();
+    while (true)
+    {
+        var client = new GameClient();
+        client.Start();
+    }
 }
 catch (Exception ex)
 {
